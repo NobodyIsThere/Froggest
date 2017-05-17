@@ -5,9 +5,18 @@ using UnityEngine;
 public class CameraBehaviour : MonoBehaviour {
 
     public Transform frog;
-	
-	// Update is called once per frame
-	void Update () {
-        transform.position = new Vector3(frog.position.x + 1, 0, -10);
-	}
+    Vector3 target;
+    public float smoothTime = 0.3F;
+    private Vector3 velocity = Vector3.zero;
+
+    void Update () {
+
+        if (frog.position.x > transform.position.x)
+        {
+            target = new Vector3(frog.position.x + 1, 0, -10);
+            transform.position = Vector3.SmoothDamp(transform.position, target, ref velocity, smoothTime);
+        }
+
+    }
+
 }

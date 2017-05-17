@@ -6,6 +6,8 @@ public class PlatformManager : MonoBehaviour {
 
     public Transform platformprefab;
     public GameObject[] obj;
+    private bool clearspace = true;
+    Vector3 platpos;
 
     public float MinSpawn;
     public float MaxSpawn;
@@ -15,10 +17,27 @@ public class PlatformManager : MonoBehaviour {
         SpawnPlatforms();
     }
 
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        clearspace = false;
+        Debug.Log("no space bro");
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        clearspace = true;
+        Debug.Log("okay go");
+    }
+
     void SpawnPlatforms()
     {
-        Instantiate(obj[Random.Range(0, obj.GetLength(0))], transform.position, Quaternion.identity);
-        Invoke("SpawnPlatforms", Random.Range(MinSpawn, MaxSpawn));
+        platpos = new Vector3(transform.position.x, transform.position.y, 0);
+        if (clearspace)
+        {
+            Instantiate(obj[Random.Range(0, obj.GetLength(0))], platpos, Quaternion.identity);
+        }
+            Invoke("SpawnPlatforms", Random.Range(MinSpawn, MaxSpawn));
+
     }
 
 }
