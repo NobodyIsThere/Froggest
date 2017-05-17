@@ -6,12 +6,48 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float TongueRetractSpeed = 3f;
+    public float MinTongueLength = 2f;
+    public float TongueRetractSpeed = 5f;
+    public float TongueStrength = 1000f;
 
     private List<Vector3> swing_points = new List<Vector3>();  // The point at which the tongue is attached.
     private bool _updateTongue = false;
     private LineRenderer _lineRenderer;
-    
+
+    private class Rope
+    {
+        public float length { get; set; }
+        public float spring_constant { get; set; }
+
+        public Rope(float length, float spring_constant)
+        {
+            this.length = length;
+            this.spring_constant = spring_constant;
+        }
+
+        public Rope(Vector2 one_end, Vector2 other_end, float spring_constant)
+        {
+            length = Vector2.SqrMagnitude(other_end - one_end);
+            this.spring_constant = spring_constant;
+        }
+
+        public Vector2 Force(Vector3 this_end, Vector3 other_end)
+        {
+            Vector2 displacement = other_end - this_end;
+            float distance = Vector2.SqrMagnitude(displacement);
+            float extension = distance - length;
+
+            if (extension > 0)
+            {
+                Vector2 direction = displacement / distance;
+                return spring_constant*extension*direction;
+            }
+            return Vector2.zero;
+        }
+    }
+
+    private Rope tongue;
+
     // Use this for initialization
     void Start ()
     {
@@ -31,6 +67,12 @@ public class PlayerMovement : MonoBehaviour
                 swing_points.Clear();
                 swing_points.Add(hit.point);
                 _updateTongue = true;
+
+                // Cancel most velocity in direction away from swing point
+                Vector2 force_dir = (hit.point - (Vector2) transform.position).normalized;
+                Rigidbody2D rb = GetComponent<Rigidbody2D>();
+                float force_mag = Vector2.Dot(rb.velocity, -force_dir);
+                rb.velocity += force_dir*force_mag;
             }
         }
         else if (Input.GetMouseButtonUp(0) && swing_points.Count > 0)
@@ -66,12 +108,10 @@ public class PlayerMovement : MonoBehaviour
         // Recalculate lines and joints if necessary.
         if (_updateTongue)
         {
-            Destroy(gameObject.GetComponent<SpringJoint2D>());
+            tongue = null;
             if (swing_points.Count > 0)
             {
-                SpringJoint2D swingPart = gameObject.AddComponent<SpringJoint2D>();
-                swingPart.autoConfigureDistance = true;
-                swingPart.connectedAnchor = swing_points.Last();
+                tongue = new Rope(transform.position, swing_points.Last(), TongueStrength);
             }
             _updateTongue = false;
         }
@@ -79,8 +119,16 @@ public class PlayerMovement : MonoBehaviour
         // Decrease tongue length if the button is held down
         if (Input.GetMouseButton(0) && swing_points.Count > 0)
         {
-            SpringJoint2D swingPart = GetComponent<SpringJoint2D>();
-            swingPart.distance -= TongueRetractSpeed*Time.deltaTime;
+            if (tongue.length > MinTongueLength)
+            {
+                tongue.length -= TongueRetractSpeed*Time.deltaTime;
+            }
+        }
+
+        // Add force
+        if (tongue != null)
+        {
+            GetComponent<Rigidbody2D>().AddForce(tongue.Force(transform.position, swing_points.Last()));
         }
 
         // Draw lines
