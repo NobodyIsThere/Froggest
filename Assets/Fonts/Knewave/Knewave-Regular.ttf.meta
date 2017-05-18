@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 00277178ae5c11c43a2919d7b19a51b2
+timeCreated: 1495113673
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Knewave
+  fontNames:
+  - Knewave
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

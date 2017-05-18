@@ -5,6 +5,8 @@ using UnityEngine;
 public class TextDisappearEffect : MonoBehaviour
 {
     public float FadeTime = 0.3f;
+    public float start_size = 0.1f;
+    public float end_size = 0.4f;
 
     private TextMesh mesh;
     private MeshRenderer renderer;
@@ -32,7 +34,7 @@ public class TextDisappearEffect : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        mesh.characterSize = Mathf.Lerp(0.1f, 0.4f, t);
+        mesh.characterSize = Mathf.Lerp(start_size, end_size, t);
         renderer.material.color = new Color(r, g, b, Mathf.Lerp(1f, 0f, t));
     }
 }

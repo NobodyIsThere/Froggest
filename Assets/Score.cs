@@ -6,12 +6,13 @@ using UnityEngine;
 public class Score : MonoBehaviour
 {
     public TextMesh MultiplierText;
+    public GameObject MultiplierTextEffect;
     public GameObject EdgeEffect;
     public TextMesh ScoreText;
 
     public int EdgeBonus = 500;
-    public float VelocityMultiplier = 0.5f; // How many points do you get per second for one unit of velocity?
-    public float MultiplierVelocityThreshold = 1f;  // Score multiplier increases at integer multiples of this velocity.
+    public float VelocityMultiplier = 10f; // How many points do you get per second for one unit of velocity?
+    public float MultiplierVelocityThreshold = 5f;  // Score multiplier increases at integer multiples of this velocity.
 
     private Rigidbody2D rb;
 
@@ -23,7 +24,7 @@ public class Score : MonoBehaviour
     // User settings that we need to remember
     private float _multiplier_text_min_size;
     public float MultiplierTextMaxSize = 0.5f;
-    public int MultiplierTextMaxSizeValue = 50;
+    public int MultiplierTextMaxSizeValue = 10;
 
     // Use this for initialization
     void Start ()
@@ -81,6 +82,8 @@ public class Score : MonoBehaviour
         _multiplier = 0;
         MultiplierText.text = "";
         MultiplierText.characterSize = _multiplier_text_min_size;
+
+        _last_velocity_threshold = 0;
     }
 
     private void IncrementMultiplier()
@@ -89,5 +92,14 @@ public class Score : MonoBehaviour
         MultiplierText.text = _multiplier.ToString() + "x";
         MultiplierText.characterSize = Mathf.Lerp(_multiplier_text_min_size, MultiplierTextMaxSize,
             ((float) _multiplier)/MultiplierTextMaxSizeValue);
+        GameObject effect_obj = Instantiate(MultiplierTextEffect, MultiplierText.transform);
+        effect_obj.transform.localPosition = Vector3.zero;
+        effect_obj.GetComponent<TextMesh>().text = _multiplier.ToString() + "x";
+        effect_obj.GetComponent<TextMesh>().characterSize = MultiplierText.characterSize;
+        TextDisappearEffect effect = effect_obj.AddComponent<TextDisappearEffect>();
+        effect.start_size = MultiplierText.characterSize;
+        effect.end_size = MultiplierTextMaxSize + 0.05f;
+
+        _last_velocity_threshold = rb.velocity.magnitude - 0.5f*MultiplierVelocityThreshold;
     }
 }
