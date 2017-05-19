@@ -7,7 +7,7 @@ public class OutOfBounds : MonoBehaviour {
     private float tooleft;
     private float toolow;
 
-	void Start()
+    void Start()
     {
         Camera camera = Camera.main;
         Vector3 bound = camera.ViewportToWorldPoint(new Vector3(0, 0, camera.nearClipPlane));
@@ -15,9 +15,9 @@ public class OutOfBounds : MonoBehaviour {
         toolow = bound.y - 1;
     }
 
-	void Update() {
+    void Update() {
         CheckPos();
-	}
+    }
 
     void CheckPos()
     {

@@ -26,7 +26,7 @@ public class Score : MonoBehaviour
     // User settings that we need to remember
     private float _multiplier_text_min_size;
     public float MultiplierTextMaxSize = 0.5f;
-    public int MultiplierTextMaxSizeValue = 10;
+    public int MultiplierTextMaxSizeValue = 20;
 
     // Stuff that we work out at start time.
     private int _geometryLayer = 0;
@@ -63,6 +63,8 @@ public class Score : MonoBehaviour
                         Instantiate(EdgeEffect, mousePos, Quaternion.identity);
                         _score += _multiplier*EdgeBonus;
                     }
+                    if (_multiplier > 3)
+                        IncrementMultiplier();
                 }
                 else if (hit.transform.gameObject.layer == _pickupsLayer)
                 {
@@ -77,7 +79,7 @@ public class Score : MonoBehaviour
         // Here's how the multiplier works:
         // When you pass integer multiples of the multiplier velocity threshold, your multiplier increases
         // If your speed decreases past the last threshold, multiplier is reset to 0.
-        if (rb.velocity.magnitude < _last_velocity_threshold)
+        if (rb.velocity.magnitude < _last_velocity_threshold && OnScreen())
         {
             ResetMultiplier();
         }
@@ -121,5 +123,10 @@ public class Score : MonoBehaviour
         effect.end_size = MultiplierTextMaxSize + 0.05f;
 
         _last_velocity_threshold = rb.velocity.magnitude - 0.5f*MultiplierVelocityThreshold;
+    }
+
+    private bool OnScreen()
+    {
+        return transform.position.y < Camera.main.ViewportToWorldPoint(new Vector3(0, 1, Camera.main.nearClipPlane)).y;
     }
 }
