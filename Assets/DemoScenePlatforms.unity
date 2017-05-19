@@ -621,6 +621,11 @@ Prefab:
       propertyPath: m_Name
       value: Platform Spawner
       objectReference: {fileID: 0}
+    - target: {fileID: 114649819193675870, guid: f5ab068ea8ed99840ab6fbbafdd32fd2,
+        type: 2}
+      propertyPath: seed
+      value: 80
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f5ab068ea8ed99840ab6fbbafdd32fd2, type: 2}
   m_IsPrefabParent: 0
@@ -1301,6 +1306,22 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1413986402}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1432275071 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1012863316495052, guid: a4f861e2b750904438839edd848bf252,
+    type: 2}
+  m_PrefabInternal: {fileID: 1895860412}
+--- !u!114 &1432275078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1432275071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 364ca1845322a594e943b11b862afbfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1653750299
 Prefab:
   m_ObjectHideFlags: 0
@@ -1498,7 +1519,8 @@ Prefab:
       propertyPath: ScoreText
       value: 
       objectReference: {fileID: 616718925}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 114011672807812742, guid: a4f861e2b750904438839edd848bf252, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: a4f861e2b750904438839edd848bf252, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1896789127

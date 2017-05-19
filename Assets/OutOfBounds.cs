@@ -2,33 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OutOfBounds : MonoBehaviour {
+public class OutOfBounds : MonoBehaviour
+{
 
     private float tooleft;
     private float toolow;
 
-	void Start()
+    void Update()
     {
-        Camera camera = Camera.main;
-        Vector3 bound = camera.ViewportToWorldPoint(new Vector3(0, 0, camera.nearClipPlane));
-        tooleft = bound.x - 1;
-        toolow = bound.y - 1;
-    }
-
-	void Update() {
         CheckPos();
-	}
+    }
 
     void CheckPos()
     {
+        // Find bottom left value of current camera position
+        Camera cam = Camera.main;
+        Vector3 bound = cam.ViewportToWorldPoint(new Vector3(0, 0, cam.nearClipPlane));
+        //Set out of bounds to 1 unit off screen 
+        tooleft = bound.x - 1;
+        toolow = bound.y - 1;
+
+        //if out of bounds, end game & log data
         if (transform.position.x <= tooleft || transform.position.y <= toolow)
         {
-            Debug.Log("You Lose");
-            Debug.Log(toolow);
-            Debug.Log(transform.position.y);
-            Debug.Log(tooleft);
-            Debug.Log(transform.position.x);
             Debug.Break();
+            //Log Data
         }
 
     }
