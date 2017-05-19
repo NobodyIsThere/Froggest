@@ -926,6 +926,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camera: {fileID: 1896789127}
+  player: {fileID: 1432275071}
 --- !u!4 &1141297407
 Transform:
   m_ObjectHideFlags: 0
@@ -1352,6 +1353,25 @@ GameObject:
   m_PrefabParentObject: {fileID: 1012863316495052, guid: a4f861e2b750904438839edd848bf252,
     type: 2}
   m_PrefabInternal: {fileID: 1895860412}
+--- !u!114 &1432275072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1432275071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bfc5ebc6e4494bd298904da95a2a6db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1012863316495052, guid: a4f861e2b750904438839edd848bf252, type: 2}
+  body: {fileID: 1432275076}
+  velocities: []
+--- !u!50 &1432275076 stripped
+Rigidbody2D:
+  m_PrefabParentObject: {fileID: 50953618388179384, guid: a4f861e2b750904438839edd848bf252,
+    type: 2}
+  m_PrefabInternal: {fileID: 1895860412}
 --- !u!114 &1432275078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1363,7 +1383,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 364ca1845322a594e943b11b862afbfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventSystem: {fileID: 0}
+  logger: {fileID: 1432275072}
+  eventSystem: {fileID: 1191558715}
 --- !u!1001 &1546581574
 Prefab:
   m_ObjectHideFlags: 0
