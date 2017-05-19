@@ -8,9 +8,11 @@ public class Score : MonoBehaviour
     public TextMesh MultiplierText;
     public GameObject MultiplierTextEffect;
     public GameObject EdgeEffect;
+    public GameObject PickupEffect;
     public TextMesh ScoreText;
 
     public int EdgeBonus = 500;
+    public int PickupScore = 1000;
     public float VelocityMultiplier = 10f; // How many points do you get per second for one unit of velocity?
     public float MultiplierVelocityThreshold = 5f;  // Score multiplier increases at integer multiples of this velocity.
 
@@ -26,6 +28,10 @@ public class Score : MonoBehaviour
     public float MultiplierTextMaxSize = 0.5f;
     public int MultiplierTextMaxSizeValue = 10;
 
+    // Stuff that we work out at start time.
+    private int _geometryLayer = 0;
+    private int _pickupsLayer = 0;
+
     // Use this for initialization
     void Start ()
     {
@@ -33,6 +39,8 @@ public class Score : MonoBehaviour
         _multiplier = 0;
         rb = GetComponent<Rigidbody2D>();
         _multiplier_text_min_size = MultiplierText.characterSize;
+        _geometryLayer = LayerMask.NameToLayer("Geometry");
+        _pickupsLayer = LayerMask.NameToLayer("Pickups");
     }
     
     // Update is called once per frame
@@ -42,14 +50,26 @@ public class Score : MonoBehaviour
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePos.z = 0;
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, mousePos - transform.position, float.PositiveInfinity, 1 << LayerMask.NameToLayer("Geometry"));
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, mousePos - transform.position,
+                float.PositiveInfinity, (1 << _geometryLayer) | (1 << _pickupsLayer));
             if (hit.collider != null)
             {
-                if (Mathf.Abs(hit.normal.y) < 0.001)
+                // Geometry
+                if (hit.transform.gameObject.layer == _geometryLayer)
                 {
-                    mousePos.z = -1f;
-                    Instantiate(EdgeEffect, mousePos, Quaternion.identity);
-                    _score += _multiplier*EdgeBonus;
+                    if (Mathf.Abs(hit.normal.y) < 0.001)
+                    {
+                        mousePos.z = -1f;
+                        Instantiate(EdgeEffect, mousePos, Quaternion.identity);
+                        _score += _multiplier*EdgeBonus;
+                    }
+                }
+                else if (hit.transform.gameObject.layer == _pickupsLayer)
+                {
+                    GameObject pickupScore = Instantiate(PickupEffect, hit.transform.position, Quaternion.identity);
+                    pickupScore.GetComponent<TextMesh>().text = PickupScore.ToString();
+                    _score += _multiplier*PickupScore;
+                    Destroy(hit.transform.gameObject);
                 }
             }
         }

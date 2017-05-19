@@ -10,9 +10,11 @@ public class PlayerMovement : MonoBehaviour
     public float TongueRetractSpeed = 5f;
     public float TongueStrength = 1000f;
 
-    private List<Vector3> swing_points = new List<Vector3>();  // The point at which the tongue is attached.
+    private readonly List<Vector3> _swingPoints = new List<Vector3>();  // The point at which the tongue is attached.
     private bool _updateTongue = false;
     private LineRenderer _lineRenderer;
+
+    private Vector3[] _linePoints;
 
     private class Rope
     {
@@ -64,8 +66,8 @@ public class PlayerMovement : MonoBehaviour
             hit = Physics2D.Raycast(transform.position, mousePos - transform.position, float.PositiveInfinity, 1 << LayerMask.NameToLayer("Geometry"));
             if (hit.collider != null)
             {
-                swing_points.Clear();
-                swing_points.Add(hit.point);
+                _swingPoints.Clear();
+                _swingPoints.Add(hit.point);
                 _updateTongue = true;
 
                 // Cancel most velocity in direction away from swing point
@@ -75,32 +77,32 @@ public class PlayerMovement : MonoBehaviour
                 rb.velocity += force_dir*force_mag;
             }
         }
-        else if (Input.GetMouseButtonUp(0) && swing_points.Count > 0)
+        else if (Input.GetMouseButtonUp(0) && _swingPoints.Count > 0)
         {
-            swing_points.Clear();
+            _swingPoints.Clear();
             _updateTongue = true;
         }
 
         // Check for collisions along tongue length
-        if (swing_points.Count > 0)
+        if (_swingPoints.Count > 0)
         {
-            hit = Physics2D.Linecast(transform.position, swing_points.Last(),
+            hit = Physics2D.Linecast(transform.position, _swingPoints.Last(),
                 1 << LayerMask.NameToLayer("Geometry"));
-            if (hit.collider != null && Vector2.Distance(hit.point, swing_points.Last()) > 0.1)
+            if (hit.collider != null && Vector2.Distance(hit.point, _swingPoints.Last()) > 0.1)
             {
-                swing_points.Add(hit.point);
+                _swingPoints.Add(hit.point);
                 _updateTongue = true;
             }
         }
 
         // Check if any (last) connections are now unnecessary.
-        if (swing_points.Count > 1)
+        if (_swingPoints.Count > 1)
         {
-            hit = Physics2D.Linecast(transform.position, swing_points[swing_points.Count - 2],
+            hit = Physics2D.Linecast(transform.position, _swingPoints[_swingPoints.Count - 2],
                 1 << LayerMask.NameToLayer("Geometry"));
-            if (hit.collider == null || Vector2.Distance(hit.point, swing_points[swing_points.Count-2]) < 0.1)
+            if (hit.collider == null || Vector2.Distance(hit.point, _swingPoints[_swingPoints.Count-2]) < 0.1)
             {
-                swing_points.Remove(swing_points.Last());
+                _swingPoints.Remove(_swingPoints.Last());
                 _updateTongue = true;
             }
         }
@@ -109,15 +111,14 @@ public class PlayerMovement : MonoBehaviour
         if (_updateTongue)
         {
             tongue = null;
-            if (swing_points.Count > 0)
+            if (_swingPoints.Count > 0)
             {
-                tongue = new Rope(transform.position, swing_points.Last(), TongueStrength);
+                tongue = new Rope(transform.position, _swingPoints.Last(), TongueStrength);
             }
-            _updateTongue = false;
         }
 
         // Decrease tongue length if the button is held down
-        if (Input.GetMouseButton(0) && swing_points.Count > 0)
+        if (tongue != null && Input.GetMouseButton(0) && _swingPoints.Count > 0)
         {
             if (tongue.length > MinTongueLength)
             {
@@ -128,14 +129,23 @@ public class PlayerMovement : MonoBehaviour
         // Add force
         if (tongue != null)
         {
-            GetComponent<Rigidbody2D>().AddForce(tongue.Force(transform.position, swing_points.Last()));
+            GetComponent<Rigidbody2D>().AddForce(tongue.Force(transform.position, _swingPoints.Last()));
         }
 
         // Draw lines
-        _lineRenderer.enabled = swing_points.Count > 0;
-        _lineRenderer.positionCount = swing_points.Count;
-        _lineRenderer.SetPositions(swing_points.ToArray());
-        _lineRenderer.positionCount += 1;
-        _lineRenderer.SetPosition(_lineRenderer.positionCount-1, transform.position);
+        _lineRenderer.enabled = _swingPoints.Count > 0;
+
+        if (_updateTongue)
+        {
+            _lineRenderer.numPositions = _swingPoints.Count;
+            _lineRenderer.SetPositions(_swingPoints.ToArray());
+            _lineRenderer.numPositions += 1;
+        }
+        _lineRenderer.SetPosition(_lineRenderer.numPositions-1, transform.position);
+
+        if (_updateTongue)
+        {
+            _updateTongue = false;
+        }
     }
 }

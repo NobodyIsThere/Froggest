@@ -9,45 +9,45 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1767099066729722}
+  m_RootGameObject: {fileID: 1301489911439412}
   m_IsPrefabParent: 1
---- !u!1 &1767099066729722
+--- !u!1 &1301489911439412
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4778483247937858}
-  - component: {fileID: 23077903455416434}
-  - component: {fileID: 102934872456957270}
-  - component: {fileID: 114558617155231908}
+  - component: {fileID: 4795047069802212}
+  - component: {fileID: 23045325348827952}
+  - component: {fileID: 102680057171481798}
+  - component: {fileID: 114162653482188882}
   m_Layer: 0
-  m_Name: MultiplierText
+  m_Name: PickupEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4778483247937858
+--- !u!4 &4795047069802212
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1767099066729722}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -5.13, z: 10}
+  m_GameObject: {fileID: 1301489911439412}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &23077903455416434
+--- !u!23 &23045325348827952
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1767099066729722}
+  m_GameObject: {fileID: 1301489911439412}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -73,38 +73,38 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
---- !u!102 &102934872456957270
+--- !u!102 &102680057171481798
 TextMesh:
   serializedVersion: 3
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1767099066729722}
-  m_Text: 
+  m_GameObject: {fileID: 1301489911439412}
+  m_Text: 100
   m_OffsetZ: 0
-  m_CharacterSize: 0.2
+  m_CharacterSize: 0.1
   m_LineSpacing: 1
-  m_Anchor: 7
-  m_Alignment: 0
+  m_Anchor: 4
+  m_Alignment: 1
   m_TabSize: 4
-  m_FontSize: 50
-  m_FontStyle: 2
+  m_FontSize: 40
+  m_FontStyle: 1
   m_RichText: 1
   m_Font: {fileID: 12800000, guid: ba974827175bf0b4796248cfa9464a95, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
---- !u!114 &114558617155231908
+--- !u!114 &114162653482188882
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1767099066729722}
+  m_GameObject: {fileID: 1301489911439412}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -900027084, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 83b7153ec43094743acd632b406131b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
-  m_EffectDistance: {x: 1, y: -1}
-  m_UseGraphicAlpha: 1
+  FadeTime: 0.3
+  start_size: 0.1
+  end_size: 0.4
