@@ -25,6 +25,7 @@ GameObject:
   - component: {fileID: 120074945866876508}
   - component: {fileID: 114523851064715266}
   - component: {fileID: 114542891465753504}
+  - component: {fileID: 114011672807812742}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -39,7 +40,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1012863316495052}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1, y: 2.53, z: 0}
+  m_LocalPosition: {x: -6, y: 0.92, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -79,6 +80,17 @@ CircleCollider2D:
   m_Offset: {x: 0, y: -0.00060915947}
   serializedVersion: 2
   m_Radius: 0.48905087
+--- !u!114 &114011672807812742
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1012863316495052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 364ca1845322a594e943b11b862afbfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114523851064715266
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -91,7 +103,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MinTongueLength: 2
-  TongueRetractSpeed: 10
+  TongueRetractSpeed: 15
   TongueStrength: 1000
 --- !u!114 &114542891465753504
 MonoBehaviour:
