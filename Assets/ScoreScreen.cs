@@ -8,7 +8,7 @@ public class ScoreScreen : MonoBehaviour
     public FlashyCounter[] Counters;
 
     private bool _started = false;
-    private int _current_counter = 0;
+    private int _currentCounter = 0;
 
     // Use this for initialization
     void Start () {
@@ -27,11 +27,12 @@ public class ScoreScreen : MonoBehaviour
     
     // Update is called once per frame
     void Update () {
-        if (_started && !Counters[_current_counter].IsRunning())
+        if (_started && !Counters[_currentCounter].IsRunning())
         {
-            if (_current_counter++ < Counters.Length)
+            _currentCounter++;
+            if (_currentCounter < Counters.Length)
             {
-                Counters[_current_counter].Begin();
+                Counters[_currentCounter].Begin();
             }
             else
             {

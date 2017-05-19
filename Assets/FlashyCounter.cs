@@ -9,17 +9,25 @@ public class FlashyCounter : MonoBehaviour
     public int Target = 0;
     public int Interval = 1000; // How often to flash
     public float Speed = 100f;  // Speed at which counter is incremented (/s)
+    public float MaxTime = 5f; // Maximum amount of time that the counter can take
+    public string Suffix = ""; // Suffix to append to counter
     public GameObject FlashEffect;
 
     private bool _running = false;
-    private int _current;
+    private float _last;
+    private float _current;
     private TextMesh _text;
 
     // Use this for initialization
     void Start ()
     {
         _current = StartCount;
+        _last = StartCount;
         _text = GetComponent<TextMesh>();
+        if ((Target - StartCount)/Speed > MaxTime)
+        {
+            Speed = (Target - StartCount)/MaxTime;
+        }
     }
 
     public void Begin()
@@ -31,17 +39,21 @@ public class FlashyCounter : MonoBehaviour
     void Update () {
         if (_running && _current < Target)
         {
-            _current += (int) (Speed*Time.deltaTime);
+            _last = _current;
+            _current += Speed*Time.deltaTime;
+            int display = Mathf.FloorToInt(_current);
             if (_current > Target)
                 _current = Target;
 
-            if (_current == Target || _current%Interval == 0)
+            int thresholdOfInterest = Interval*(Mathf.FloorToInt(_current/Interval));
+            bool passedThreshold = _last < thresholdOfInterest && _current > thresholdOfInterest;
+            if (display == Target || passedThreshold)
             {
                 Flash();
             }
-            _text.text = _current.ToString();
+            _text.text = display.ToString() + Suffix;
         }
-        if (_current == Target)
+        if (_running && Mathf.FloorToInt(_current) == Target)
         {
             _running = false;
         }
@@ -50,7 +62,12 @@ public class FlashyCounter : MonoBehaviour
     private void Flash()
     {
         TextMesh effect = Instantiate(FlashEffect, transform).GetComponent<TextMesh>();
-        effect.text = _current.ToString();
+        effect.characterSize = _text.characterSize;
+        effect.fontSize = _text.fontSize;
+        effect.anchor = _text.anchor;
+        effect.GetComponent<TextDisappearEffect>().end_size = _text.characterSize + 0.1f;
+        effect.transform.localPosition = Vector2.zero;
+        effect.text = Mathf.FloorToInt(_current).ToString() + Suffix;
     }
 
     public bool IsRunning()
