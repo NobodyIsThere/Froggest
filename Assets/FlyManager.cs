@@ -8,39 +8,56 @@ public class FlyManager : MonoBehaviour {
     private bool clearspace = true;
     Vector3 flypos;
     Vector3 lastfly;
+    Vector3 topbound;
+    Vector3 lowbound;
 
     public float MinSpawnTime;
     public float MaxSpawnTime;
-    public float MinVertSpread;
-    public float MaxVertSpread;
+    public float MinHorzSpread;
+
 
     void Start()
     {
         SpawnFlys();
     }
 
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        clearspace = false;
-        //Debug.Log("no space bro");
-    }
-
-    void OnTriggerExit2D(Collider2D other)
-    {
-        clearspace = true;
-        //Debug.Log("okay go");
-    }
-
     void SpawnFlys()
     {
+        Camera camera = Camera.main;
+        Vector3 topbound = camera.ViewportToWorldPoint(new Vector3(0, 1, camera.nearClipPlane));
+        Vector3 lowbound = camera.ViewportToWorldPoint(new Vector3(0, 0, camera.nearClipPlane));
+
+        float flyvertspace = Random.Range(lowbound.y, topbound.y);
+        //Debug.Log(flyvertspace);
+        flypos = new Vector3(transform.position.x, flyvertspace, 0);
+        clearspace = Clear(flypos);
+
         if (clearspace)
         {
-            float flyvertspace = Mathf.Clamp(Random.Range(MinVertSpread, MaxVertSpread), 0, Screen.height);
-            flypos = new Vector3(transform.position.x, flyvertspace, 0);
-            Instantiate(obj, flypos, Quaternion.identity);
+            if (flypos.x > (lastfly.x + MinHorzSpread))
+            {
+                Instantiate(obj, flypos, Quaternion.identity);
+                lastfly = flypos;
+            }
         }
         Invoke("SpawnFlys", Random.Range(MinSpawnTime, MaxSpawnTime));
     }
 
+    bool Clear(Vector3 space)
+    {
+        bool spaceclear;
+        var hitColliders = Physics.OverlapSphere(space, 3);//2 is purely chosen arbitrarly
+        if (hitColliders.Length > 0)
+        {
+            spaceclear = false;
+                
+        }
+
+        else
+        {
+            spaceclear = true;
+        }
+            return spaceclear;
+    }
 
 }

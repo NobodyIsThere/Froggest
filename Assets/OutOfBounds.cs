@@ -8,10 +8,6 @@ public class OutOfBounds : MonoBehaviour
     private float tooleft;
     private float toolow;
 
-<<<<<<< HEAD
-    void Update()
-    {
-=======
     void Start()
     {
         Camera camera = Camera.main;
@@ -21,7 +17,6 @@ public class OutOfBounds : MonoBehaviour
     }
 
     void Update() {
->>>>>>> 6e54fb38d504b8839f7fcaf3983697eeaef2026c
         CheckPos();
     }
 
