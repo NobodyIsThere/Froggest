@@ -9,7 +9,7 @@ public class TextDisappearEffect : MonoBehaviour
     public float end_size = 0.4f;
 
     private TextMesh mesh;
-    private MeshRenderer renderer;
+    private new MeshRenderer renderer;
     private float start_time;
     private float r;
     private float g;

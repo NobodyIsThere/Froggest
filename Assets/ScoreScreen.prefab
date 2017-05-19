@@ -567,7 +567,7 @@ MonoBehaviour:
   StartCount: 0
   Target: 0
   Interval: 1000
-  Speed: 100
+  Speed: 1000
   FlashEffect: {fileID: 1407609616577714, guid: b2d2dabb3286f18488ece8912ee691dd,
     type: 2}
 --- !u!114 &114839050633737658
@@ -584,6 +584,6 @@ MonoBehaviour:
   StartCount: 0
   Target: 0
   Interval: 1000
-  Speed: 100
+  Speed: 1000
   FlashEffect: {fileID: 1407609616577714, guid: b2d2dabb3286f18488ece8912ee691dd,
     type: 2}

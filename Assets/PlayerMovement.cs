@@ -16,6 +16,11 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3[] _linePoints;
 
+    private bool _is_fake_clicking = false;
+    private bool _has_just_fake_clicked = false;
+    private bool _has_just_fake_released = false;
+    private Vector2 _fake_click_point;
+
     private class Rope
     {
         public float length { get; set; }
@@ -55,13 +60,50 @@ public class PlayerMovement : MonoBehaviour
     {
         _lineRenderer = GetComponent<LineRenderer>();
     }
+
+    void Click(Vector2 screenPos)
+    {
+        _is_fake_clicking = true;
+        _has_just_fake_clicked = true;
+        _fake_click_point = screenPos;
+    }
+
+    void Release()
+    {
+        _is_fake_clicking = false;
+        _has_just_fake_released = true;
+    }
+
+    public bool IsFakeClicking()
+    {
+        return _is_fake_clicking;
+    }
+
+    public Vector2 FakeClickPoint()
+    {
+        return _fake_click_point;
+    }
+
+    public bool HasJustFakeClicked()
+    {
+        return _has_just_fake_clicked;
+    }
+
+    public bool HasJustFakeReleased()
+    {
+        return _has_just_fake_released;
+    }
     
     // Update is called once per frame
     void Update () {
         RaycastHit2D hit;
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) || _has_just_fake_clicked)
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            if (_has_just_fake_clicked)
+            {
+                mousePos = Camera.main.ScreenToWorldPoint(_fake_click_point);
+            }
             mousePos.z = 0;
             hit = Physics2D.Raycast(transform.position, mousePos - transform.position, float.PositiveInfinity, 1 << LayerMask.NameToLayer("Geometry"));
             if (hit.collider != null)
@@ -71,13 +113,13 @@ public class PlayerMovement : MonoBehaviour
                 _updateTongue = true;
 
                 // Cancel most velocity in direction away from swing point
-                Vector2 force_dir = (hit.point - (Vector2) transform.position).normalized;
+                Vector2 forceDir = (hit.point - (Vector2) transform.position).normalized;
                 Rigidbody2D rb = GetComponent<Rigidbody2D>();
-                float force_mag = Vector2.Dot(rb.velocity, -force_dir);
-                rb.velocity += force_dir*force_mag;
+                float forceMag = Vector2.Dot(rb.velocity, -forceDir);
+                rb.velocity += forceDir*forceMag;
             }
         }
-        else if (Input.GetMouseButtonUp(0) && _swingPoints.Count > 0)
+        else if ((Input.GetMouseButtonUp(0) || _has_just_fake_released) && _swingPoints.Count > 0)
         {
             _swingPoints.Clear();
             _updateTongue = true;
@@ -118,7 +160,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Decrease tongue length if the button is held down
-        if (tongue != null && Input.GetMouseButton(0) && _swingPoints.Count > 0)
+        if (tongue != null && (Input.GetMouseButton(0) || _is_fake_clicking) && _swingPoints.Count > 0)
         {
             if (tongue.length > MinTongueLength)
             {
@@ -137,15 +179,18 @@ public class PlayerMovement : MonoBehaviour
 
         if (_updateTongue)
         {
-            _lineRenderer.positionCount = _swingPoints.Count;
+            _lineRenderer.numPositions = _swingPoints.Count;
             _lineRenderer.SetPositions(_swingPoints.ToArray());
-            _lineRenderer.positionCount += 1;
+            _lineRenderer.numPositions += 1;
         }
-        _lineRenderer.SetPosition(_lineRenderer.positionCount-1, transform.position);
+        _lineRenderer.SetPosition(_lineRenderer.numPositions-1, transform.position);
 
         if (_updateTongue)
         {
             _updateTongue = false;
         }
+
+        _has_just_fake_clicked = false;
+        _has_just_fake_released = false;
     }
 }
