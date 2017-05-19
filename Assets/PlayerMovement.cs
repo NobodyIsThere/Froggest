@@ -61,14 +61,14 @@ public class PlayerMovement : MonoBehaviour
         _lineRenderer = GetComponent<LineRenderer>();
     }
 
-    void Click(Vector2 screenPos)
+    public void Click(Vector2 screenPos)
     {
         _is_fake_clicking = true;
         _has_just_fake_clicked = true;
         _fake_click_point = screenPos;
     }
 
-    void Release()
+    public void Release()
     {
         _is_fake_clicking = false;
         _has_just_fake_released = true;
