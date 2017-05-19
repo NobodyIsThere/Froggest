@@ -133,9 +133,9 @@ public class PlayerMovement : MonoBehaviour
 
         // Draw lines
         _lineRenderer.enabled = swing_points.Count > 0;
-        _lineRenderer.numPositions = swing_points.Count;
+        _lineRenderer.positionCount = swing_points.Count;
         _lineRenderer.SetPositions(swing_points.ToArray());
-        _lineRenderer.numPositions += 1;
-        _lineRenderer.SetPosition(_lineRenderer.numPositions-1, transform.position);
+        _lineRenderer.positionCount += 1;
+        _lineRenderer.SetPosition(_lineRenderer.positionCount-1, transform.position);
     }
 }
