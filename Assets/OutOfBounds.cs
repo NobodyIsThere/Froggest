@@ -5,6 +5,8 @@ using UnityEngine;
 public class OutOfBounds : MonoBehaviour
 {
 
+    public Logger logger;
+
     private float tooleft;
     private float toolow;
     public GameObject eventSystem;

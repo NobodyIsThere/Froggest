@@ -14,26 +14,31 @@ public class FlyManager : MonoBehaviour {
     public float MinSpawnTime;
     public float MaxSpawnTime;
     public float MinHorzSpread;
+    private float radius;
 
 
     void Start()
     {
+        CircleCollider2D coll = obj.GetComponent<CircleCollider2D>();
+        radius = coll.radius;
         SpawnFlys();
     }
 
     void SpawnFlys()
     {
+        //set spawn bounds to min & max y values of screen
         Camera camera = Camera.main;
         Vector3 topbound = camera.ViewportToWorldPoint(new Vector3(0, 1, camera.nearClipPlane));
         Vector3 lowbound = camera.ViewportToWorldPoint(new Vector3(0, 0, camera.nearClipPlane));
 
-        float flyvertspace = Random.Range(lowbound.y, topbound.y);
-        //Debug.Log(flyvertspace);
+        //choose transform position for new fly, check if space is clear
+        float flyvertspace = Random.Range((lowbound.y + radius), (topbound.y - radius));
         flypos = new Vector3(transform.position.x, flyvertspace, 0);
         clearspace = Clear(flypos);
 
         if (clearspace)
         {
+            //check distance from last fly
             if (flypos.x > (lastfly.x + MinHorzSpread))
             {
                 Instantiate(obj, flypos, Quaternion.identity);
@@ -46,7 +51,7 @@ public class FlyManager : MonoBehaviour {
     bool Clear(Vector3 space)
     {
         bool spaceclear;
-        var hitColliders = Physics.OverlapSphere(space, 3);//2 is purely chosen arbitrarly
+        var hitColliders = Physics.OverlapSphere(space, radius);
         if (hitColliders.Length > 0)
         {
             spaceclear = false;
