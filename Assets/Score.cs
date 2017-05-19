@@ -22,6 +22,9 @@ public class Score : MonoBehaviour
 
     private int _score = 0;
     private int _multiplier = 0;
+    private int _max_multiplier = 0;
+    private int _num_flies = 0;
+    private int _num_edges = 0;
 
     private float _last_velocity_threshold = 0f;
 
@@ -70,6 +73,7 @@ public class Score : MonoBehaviour
                         mousePos.z = -1f;
                         Instantiate(EdgeEffect, mousePos, Quaternion.identity);
                         _score += _multiplier*EdgeBonus;
+                        _num_edges++;
                     }
                     if (_multiplier > 3)
                         IncrementMultiplier();
@@ -80,6 +84,7 @@ public class Score : MonoBehaviour
                     pickupScore.GetComponent<TextMesh>().text = PickupScore.ToString();
                     _score += _multiplier*PickupScore;
                     Destroy(hit.transform.gameObject);
+                    _num_flies++;
                 }
             }
         }
@@ -131,6 +136,11 @@ public class Score : MonoBehaviour
         effect.end_size = MultiplierTextMaxSize + 0.05f;
 
         _last_velocity_threshold = rb.velocity.magnitude - 0.5f*MultiplierVelocityThreshold;
+
+        if (_multiplier > _max_multiplier)
+        {
+            _max_multiplier = _multiplier;
+        }
     }
 
     private bool OnScreen()
@@ -150,6 +160,6 @@ public class Score : MonoBehaviour
 
         ScoreScreen ss = Instantiate(scoreScreen, Camera.main.transform).GetComponent<ScoreScreen>();
         ss.gameObject.transform.localPosition = new Vector3(0, 0, 1);
-        ss.Begin(new int[] {finalDistance, finalScore});
+        ss.Begin(new int[] {finalDistance, finalScore, _max_multiplier, _num_flies, _num_edges});
     }
 }

@@ -20,6 +20,7 @@ public class TextDisappearEffect : MonoBehaviour
     {
         start_time = Time.time;
         mesh = GetComponent<TextMesh>();
+        start_size = mesh.characterSize;
         renderer = GetComponent<MeshRenderer>();
         r = renderer.material.color.r;
         g = renderer.material.color.g;
