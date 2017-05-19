@@ -28,7 +28,7 @@ public class Score : MonoBehaviour
     public float MultiplierTextMaxSize = 0.5f;
     public int MultiplierTextMaxSizeValue = 20;
 
-    // Stuff that we work out at start time.
+    // Stuff that we work out at StartCount time.
     private int _geometryLayer = 0;
     private int _pickupsLayer = 0;
 
