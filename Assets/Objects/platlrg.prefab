@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 50520367005309798}
   m_Layer: 8
   m_Name: platlrg
-  m_TagString: Untagged
+  m_TagString: platform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

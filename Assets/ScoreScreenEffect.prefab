@@ -9,44 +9,45 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1280135980699538}
+  m_RootGameObject: {fileID: 1407609616577714}
   m_IsPrefabParent: 1
---- !u!1 &1280135980699538
+--- !u!1 &1407609616577714
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4463930041977370}
-  - component: {fileID: 23196594713263296}
-  - component: {fileID: 102140471157000098}
+  - component: {fileID: 4523259271191828}
+  - component: {fileID: 23535285448842314}
+  - component: {fileID: 102861079520407534}
+  - component: {fileID: 114425326570826230}
   m_Layer: 0
-  m_Name: ScoreText
+  m_Name: ScoreScreenEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4463930041977370
+--- !u!4 &4523259271191828
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1280135980699538}
+  m_GameObject: {fileID: 1407609616577714}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 10.2, y: 4.56, z: 0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &23196594713263296
+--- !u!23 &23535285448842314
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1280135980699538}
+  m_GameObject: {fileID: 1407609616577714}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -72,24 +73,38 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
---- !u!102 &102140471157000098
+--- !u!102 &102861079520407534
 TextMesh:
   serializedVersion: 3
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1280135980699538}
+  m_GameObject: {fileID: 1407609616577714}
   m_Text: 0
   m_OffsetZ: 0
-  m_CharacterSize: 0.1
+  m_CharacterSize: 0.15
   m_LineSpacing: 1
-  m_Anchor: 5
+  m_Anchor: 4
   m_Alignment: 0
   m_TabSize: 4
-  m_FontSize: 40
+  m_FontSize: 50
   m_FontStyle: 0
   m_RichText: 1
   m_Font: {fileID: 12800000, guid: ba974827175bf0b4796248cfa9464a95, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!114 &114425326570826230
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1407609616577714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83b7153ec43094743acd632b406131b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FadeTime: 0.3
+  start_size: 0.15
+  end_size: 0.3

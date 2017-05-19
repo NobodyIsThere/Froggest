@@ -35,7 +35,8 @@ public class OutOfBounds : MonoBehaviour
         //if out of bounds, end game & log data
         if (transform.position.x <= tooleft || transform.position.y <= toolow)
         {
-            Debug.Break();
+            transform.position = new Vector3(tooleft + 1, toolow + 1);
+            GetComponent<Score>().EndGame();
             //Log Data
             eventSystem.GetComponent<Logger>().printToFile();
         }

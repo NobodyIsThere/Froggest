@@ -11,6 +11,8 @@ public class Score : MonoBehaviour
     public GameObject PickupEffect;
     public TextMesh ScoreText;
 
+    public GameObject scoreScreen;
+
     public int EdgeBonus = 500;
     public int PickupScore = 1000;
     public float VelocityMultiplier = 10f; // How many points do you get per second for one unit of velocity?
@@ -20,6 +22,9 @@ public class Score : MonoBehaviour
 
     private int _score = 0;
     private int _multiplier = 0;
+    private int _max_multiplier = 0;
+    private int _num_flies = 0;
+    private int _num_edges = 0;
 
     private float _last_velocity_threshold = 0f;
 
@@ -28,9 +33,10 @@ public class Score : MonoBehaviour
     public float MultiplierTextMaxSize = 0.5f;
     public int MultiplierTextMaxSizeValue = 20;
 
-    // Stuff that we work out at start time.
+    // Stuff that we work out at Start time.
     private int _geometryLayer = 0;
     private int _pickupsLayer = 0;
+    private PlayerMovement _playerMovement;
 
     // Use this for initialization
     void Start ()
@@ -41,14 +47,19 @@ public class Score : MonoBehaviour
         _multiplier_text_min_size = MultiplierText.characterSize;
         _geometryLayer = LayerMask.NameToLayer("Geometry");
         _pickupsLayer = LayerMask.NameToLayer("Pickups");
+        _playerMovement = GetComponent<PlayerMovement>();
     }
     
     // Update is called once per frame
     void Update () {
         // Edge bonus
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) || _playerMovement.HasJustFakeClicked())
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            if (_playerMovement.HasJustFakeClicked())
+            {
+                mousePos = _playerMovement.FakeClickPoint();
+            }
             mousePos.z = 0;
             RaycastHit2D hit = Physics2D.Raycast(transform.position, mousePos - transform.position,
                 float.PositiveInfinity, (1 << _geometryLayer) | (1 << _pickupsLayer));
@@ -62,6 +73,7 @@ public class Score : MonoBehaviour
                         mousePos.z = -1f;
                         Instantiate(EdgeEffect, mousePos, Quaternion.identity);
                         _score += _multiplier*EdgeBonus;
+                        _num_edges++;
                     }
                     if (_multiplier > 3)
                         IncrementMultiplier();
@@ -72,6 +84,7 @@ public class Score : MonoBehaviour
                     pickupScore.GetComponent<TextMesh>().text = PickupScore.ToString();
                     _score += _multiplier*PickupScore;
                     Destroy(hit.transform.gameObject);
+                    _num_flies++;
                 }
             }
         }
@@ -123,10 +136,30 @@ public class Score : MonoBehaviour
         effect.end_size = MultiplierTextMaxSize + 0.05f;
 
         _last_velocity_threshold = rb.velocity.magnitude - 0.5f*MultiplierVelocityThreshold;
+
+        if (_multiplier > _max_multiplier)
+        {
+            _max_multiplier = _multiplier;
+        }
     }
 
     private bool OnScreen()
     {
         return transform.position.y < Camera.main.ViewportToWorldPoint(new Vector3(0, 1, Camera.main.nearClipPlane)).y;
+    }
+
+    public void EndGame()
+    {
+        rb.isKinematic = true;
+
+        int finalDistance = (int) rb.position.x;
+        int finalScore = _score;
+
+        rb.position = transform.position;
+        rb.velocity = Vector2.zero;
+
+        ScoreScreen ss = Instantiate(scoreScreen, Camera.main.transform).GetComponent<ScoreScreen>();
+        ss.gameObject.transform.localPosition = new Vector3(0, 0, 1);
+        ss.Begin(new int[] {finalDistance, finalScore, _max_multiplier, _num_flies, _num_edges});
     }
 }
