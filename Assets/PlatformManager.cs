@@ -36,8 +36,10 @@ public class PlatformManager : MonoBehaviour {
 
     void SpawnPlatforms()
     {
+        //Attempt to spawn a platform if in a clear space
         if (clearspace)
         {
+            //Choose a Y value based of the min/max spread
             float platvertspace = Mathf.Clamp(Random.Range(MinVertSpread, MaxVertSpread), transform.position.y, Screen.height);
             platpos = new Vector3(transform.position.x, platvertspace, 0);
             if (platpos.x > (lastplat.x + MinHorzSpread))

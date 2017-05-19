@@ -6,7 +6,7 @@ public class CameraBehaviour : MonoBehaviour {
 
     public Transform frog;
     Vector3 target;
-    public float smoothTime = 0.3F;
+    public float smoothTime = 0.3F;     // Smoothing time
     public float LeadDistance = 10f;    // How far in front of the frog to stay
     private Vector3 velocity = Vector3.zero;
 

@@ -137,11 +137,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (_updateTongue)
         {
-            _lineRenderer.numPositions = _swingPoints.Count;
+            _lineRenderer.positionCount = _swingPoints.Count;
             _lineRenderer.SetPositions(_swingPoints.ToArray());
-            _lineRenderer.numPositions += 1;
+            _lineRenderer.positionCount += 1;
         }
-        _lineRenderer.SetPosition(_lineRenderer.numPositions-1, transform.position);
+        _lineRenderer.SetPosition(_lineRenderer.positionCount-1, transform.position);
 
         if (_updateTongue)
         {

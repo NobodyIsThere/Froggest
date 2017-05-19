@@ -20,12 +20,11 @@ public class Sweeper : MonoBehaviour {
         if (coll.gameObject.transform.parent)
         {
             Destroy(coll.gameObject.transform.parent.gameObject);
-            //Debug.Log("touched it!!");
         }
+
         else
         {
         Destroy(coll.gameObject);
-        //Debug.Log("omg touched it!!");
         }
         
     }
