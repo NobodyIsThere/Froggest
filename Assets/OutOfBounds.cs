@@ -7,6 +7,7 @@ public class OutOfBounds : MonoBehaviour
 
     private float tooleft;
     private float toolow;
+    public GameObject eventSystem;
 
     void Start()
     {
@@ -34,6 +35,7 @@ public class OutOfBounds : MonoBehaviour
         {
             Debug.Break();
             //Log Data
+            eventSystem.GetComponent<Logger>().printToFile();
         }
 
     }
