@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Score : MonoBehaviour
 {
-    public TextMesh MultiplierText;
-    public GameObject MultiplierTextEffect;
+    // Effects
+    public Text MultiplierText;
+    public GameObject TextFlashEffect;
     public GameObject EdgeEffect;
     public GameObject PickupEffect;
-    public TextMesh ScoreText;
+    public Text ScoreText;
 
     public GameObject scoreScreen;
 
+    // Parameters
     public int EdgeBonus = 500;
     public int PickupScore = 1000;
     public float VelocityMultiplier = 10f; // How many points do you get per second for one unit of velocity?
@@ -20,23 +23,32 @@ public class Score : MonoBehaviour
 
     private Rigidbody2D rb;
 
+    // Things we're keeping track of
     private int _score = 0;
     private int _multiplier = 0;
     private int _max_multiplier = 0;
     private int _num_flies = 0;
     private int _num_edges = 0;
 
+    private int _finalScore = 0;
+    private int _finalDistance = 0;
+
     private float _last_velocity_threshold = 0f;
+    private Transform _last_platform = null;
 
     // User settings that we need to remember
     private float _multiplier_text_min_size;
-    public float MultiplierTextMaxSize = 0.5f;
-    public int MultiplierTextMaxSizeValue = 20;
+    public float MultiplierTextMaxSize = 150f;
+    public int MultiplierTextMaxSizeValue = 50;
 
     // Stuff that we work out at Start time.
     private int _geometryLayer = 0;
     private int _pickupsLayer = 0;
     private PlayerMovement _playerMovement;
+
+    // Memory allocation
+    private int _numHits = 0;
+    private RaycastHit2D[] _tongueHits = new RaycastHit2D[2];
 
     // Use this for initialization
     void Start ()
@@ -44,7 +56,7 @@ public class Score : MonoBehaviour
         _score = 0;
         _multiplier = 0;
         rb = GetComponent<Rigidbody2D>();
-        _multiplier_text_min_size = MultiplierText.characterSize;
+        _multiplier_text_min_size = MultiplierText.fontSize;
         _geometryLayer = LayerMask.NameToLayer("Geometry");
         _pickupsLayer = LayerMask.NameToLayer("Pickups");
         _playerMovement = GetComponent<PlayerMovement>();
@@ -61,29 +73,37 @@ public class Score : MonoBehaviour
                 mousePos = _playerMovement.FakeClickPoint();
             }
             mousePos.z = 0;
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, mousePos - transform.position,
+            _numHits = Physics2D.RaycastNonAlloc(transform.position, mousePos - transform.position, _tongueHits,
                 float.PositiveInfinity, (1 << _geometryLayer) | (1 << _pickupsLayer));
-            if (hit.collider != null)
+            if (_numHits > 0)
             {
                 // Geometry
-                if (hit.transform.gameObject.layer == _geometryLayer)
+                if (_tongueHits[0].transform.gameObject.layer == _geometryLayer && _tongueHits[0].transform != _last_platform)
                 {
-                    if (Mathf.Abs(hit.normal.y) < 0.001)
+                    if (Mathf.Abs(_tongueHits[0].normal.y) < 0.001)
                     {
                         mousePos.z = -1f;
-                        Instantiate(EdgeEffect, mousePos, Quaternion.identity);
-                        _score += _multiplier*EdgeBonus;
-                        _num_edges++;
+                        if (_multiplier > 0)
+                        {
+                            int increment = _multiplier * EdgeBonus;
+                            GameObject edge_effect = Instantiate(EdgeEffect, mousePos, Quaternion.identity);
+                            edge_effect.transform.Find("PickupText").GetComponent<Text>().text = "+" + increment.ToString();
+                            _num_edges++;
+                            _score += increment;
+                        }
                     }
                     if (_multiplier > 3)
                         IncrementMultiplier();
+                    _last_platform = _tongueHits[0].transform;
                 }
-                else if (hit.transform.gameObject.layer == _pickupsLayer)
+                // Flies
+                else if (_tongueHits[0].transform.gameObject.layer == _pickupsLayer)
                 {
-                    GameObject pickupScore = Instantiate(PickupEffect, hit.transform.position, Quaternion.identity);
-                    pickupScore.GetComponent<TextMesh>().text = PickupScore.ToString();
-                    _score += _multiplier*PickupScore;
-                    Destroy(hit.transform.gameObject);
+                    GameObject pickupScore = Instantiate(PickupEffect, _tongueHits[0].transform.position, Quaternion.identity);
+                    int increment = _multiplier * PickupScore;
+                    pickupScore.GetComponentInChildren<Text>().text = "+" + increment.ToString();
+                    _score += increment;
+                    Destroy(_tongueHits[0].transform.gameObject);
                     _num_flies++;
                 }
             }
@@ -116,7 +136,7 @@ public class Score : MonoBehaviour
     {
         _multiplier = 0;
         MultiplierText.text = "";
-        MultiplierText.characterSize = _multiplier_text_min_size;
+        MultiplierText.fontSize = (int)_multiplier_text_min_size;
 
         _last_velocity_threshold = 0;
     }
@@ -125,15 +145,9 @@ public class Score : MonoBehaviour
     {
         _multiplier++;
         MultiplierText.text = _multiplier.ToString() + "x";
-        MultiplierText.characterSize = Mathf.Lerp(_multiplier_text_min_size, MultiplierTextMaxSize,
+        MultiplierText.fontSize = (int) Mathf.Lerp(_multiplier_text_min_size, MultiplierTextMaxSize,
             ((float) _multiplier)/MultiplierTextMaxSizeValue);
-        GameObject effect_obj = Instantiate(MultiplierTextEffect, MultiplierText.transform);
-        effect_obj.transform.localPosition = Vector3.zero;
-        effect_obj.GetComponent<TextMesh>().text = _multiplier.ToString() + "x";
-        effect_obj.GetComponent<TextMesh>().characterSize = MultiplierText.characterSize;
-        TextDisappearEffect effect = effect_obj.AddComponent<TextDisappearEffect>();
-        effect.start_size = MultiplierText.characterSize;
-        effect.end_size = MultiplierTextMaxSize + 0.05f;
+        Instantiate(TextFlashEffect, MultiplierText.transform);
 
         _last_velocity_threshold = rb.velocity.magnitude - 0.5f*MultiplierVelocityThreshold;
 
@@ -152,14 +166,39 @@ public class Score : MonoBehaviour
     {
         rb.isKinematic = true;
 
-        int finalDistance = (int) rb.position.x;
-        int finalScore = _score;
+        _finalDistance = (int) rb.position.x;
+        _finalScore = _score;
 
         rb.position = transform.position;
         rb.velocity = Vector2.zero;
 
         ScoreScreen ss = Instantiate(scoreScreen, Camera.main.transform).GetComponent<ScoreScreen>();
         ss.gameObject.transform.localPosition = new Vector3(0, 0, 1);
-        ss.Begin(new int[] {finalDistance, finalScore, _max_multiplier, _num_flies, _num_edges});
+        ss.Begin(new int[] {_finalDistance, _finalScore, _max_multiplier, _num_flies, _num_edges});
+    }
+
+    public int GetFinalScore()
+    {
+        return _finalScore;
+    }
+
+    public int GetFinalDistance()
+    {
+        return _finalDistance;
+    }
+
+    public int GetMaxMultiplier()
+    {
+        return _max_multiplier;
+    }
+
+    public int GetFliesEaten()
+    {
+        return _num_flies;
+    }
+
+    public int GetNumEdges()
+    {
+        return _num_edges;
     }
 }

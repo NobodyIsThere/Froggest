@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FlashyCounter : MonoBehaviour
 {
@@ -11,19 +12,19 @@ public class FlashyCounter : MonoBehaviour
     public float Speed = 100f;  // Speed at which counter is incremented (/s)
     public float MaxTime = 5f; // Maximum amount of time that the counter can take
     public string Suffix = ""; // Suffix to append to counter
-    public GameObject FlashEffect;
+    public GameObject TextFlashEffect;
 
     private bool _running = false;
     private float _last;
     private float _current;
-    private TextMesh _text;
+    private Text _text;
 
     // Use this for initialization
     void Start ()
     {
         _current = StartCount;
         _last = StartCount;
-        _text = GetComponent<TextMesh>();
+        _text = GetComponent<Text>();
         if ((Target - StartCount)/Speed > MaxTime)
         {
             Speed = (Target - StartCount)/MaxTime;
@@ -61,13 +62,7 @@ public class FlashyCounter : MonoBehaviour
 
     private void Flash()
     {
-        TextMesh effect = Instantiate(FlashEffect, transform).GetComponent<TextMesh>();
-        effect.characterSize = _text.characterSize;
-        effect.fontSize = _text.fontSize;
-        effect.anchor = _text.anchor;
-        effect.GetComponent<TextDisappearEffect>().end_size = _text.characterSize + 0.1f;
-        effect.transform.localPosition = Vector2.zero;
-        effect.text = Mathf.FloorToInt(_current).ToString() + Suffix;
+        Instantiate(TextFlashEffect, transform);
     }
 
     public bool IsRunning()
