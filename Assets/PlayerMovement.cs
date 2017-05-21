@@ -6,20 +6,26 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    // Configurable parameters
     public float MinTongueLength = 2f;
     public float TongueRetractSpeed = 5f;
     public float TongueStrength = 1000f;
 
+    // Tongue physics
     private readonly List<Vector3> _swingPoints = new List<Vector3>();  // The point at which the tongue is attached.
     private bool _updateTongue = false;
     private LineRenderer _lineRenderer;
-
     private Vector3[] _linePoints;
 
+    // Fake input
     private bool _is_fake_clicking = false;
     private bool _has_just_fake_clicked = false;
     private bool _has_just_fake_released = false;
     private Vector2 _fake_click_point;
+
+    // Memory allocation
+    private int _numHits = 0;
+    private RaycastHit2D[] _tongueHits = new RaycastHit2D[2];
 
     private class Rope
     {
@@ -96,7 +102,6 @@ public class PlayerMovement : MonoBehaviour
     
     // Update is called once per frame
     void Update () {
-        RaycastHit2D hit;
         if (Input.GetMouseButtonDown(0) || _has_just_fake_clicked)
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -105,15 +110,15 @@ public class PlayerMovement : MonoBehaviour
                 mousePos = Camera.main.ScreenToWorldPoint(_fake_click_point);
             }
             mousePos.z = 0;
-            hit = Physics2D.Raycast(transform.position, mousePos - transform.position, float.PositiveInfinity, 1 << LayerMask.NameToLayer("Geometry"));
-            if (hit.collider != null)
+            _numHits = Physics2D.RaycastNonAlloc(transform.position, mousePos - transform.position, _tongueHits, float.PositiveInfinity, 1 << LayerMask.NameToLayer("Geometry"));
+            if (_numHits > 0)
             {
                 _swingPoints.Clear();
-                _swingPoints.Add(hit.point);
+                _swingPoints.Add(_tongueHits[0].point);
                 _updateTongue = true;
 
                 // Cancel most velocity in direction away from swing point
-                Vector2 forceDir = (hit.point - (Vector2) transform.position).normalized;
+                Vector2 forceDir = (_tongueHits[0].point - (Vector2) transform.position).normalized;
                 Rigidbody2D rb = GetComponent<Rigidbody2D>();
                 float forceMag = Vector2.Dot(rb.velocity, -forceDir);
                 rb.velocity += forceDir*forceMag;
@@ -128,11 +133,11 @@ public class PlayerMovement : MonoBehaviour
         // Check for collisions along tongue length
         if (_swingPoints.Count > 0)
         {
-            hit = Physics2D.Linecast(transform.position, _swingPoints.Last(),
+            _numHits = Physics2D.LinecastNonAlloc(transform.position, _swingPoints.Last(), _tongueHits,
                 1 << LayerMask.NameToLayer("Geometry"));
-            if (hit.collider != null && Vector2.Distance(hit.point, _swingPoints.Last()) > 0.1)
+            if (_numHits > 0 && Vector2.Distance(_tongueHits[0].point, _swingPoints.Last()) > 0.1)
             {
-                _swingPoints.Add(hit.point);
+                _swingPoints.Add(_tongueHits[0].point);
                 _updateTongue = true;
             }
         }
@@ -140,9 +145,9 @@ public class PlayerMovement : MonoBehaviour
         // Check if any (last) connections are now unnecessary.
         if (_swingPoints.Count > 1)
         {
-            hit = Physics2D.Linecast(transform.position, _swingPoints[_swingPoints.Count - 2],
+            _numHits = Physics2D.LinecastNonAlloc(transform.position, _swingPoints[_swingPoints.Count - 2], _tongueHits,
                 1 << LayerMask.NameToLayer("Geometry"));
-            if (hit.collider == null || Vector2.Distance(hit.point, _swingPoints[_swingPoints.Count-2]) < 0.1)
+            if (_numHits == 0 || Vector2.Distance(_tongueHits[0].point, _swingPoints[_swingPoints.Count-2]) < 0.1)
             {
                 _swingPoints.Remove(_swingPoints.Last());
                 _updateTongue = true;
