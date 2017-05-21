@@ -16,8 +16,9 @@ public class TextFlashEffect : MonoBehaviour {
 
         // Now make a canvas and make that our parent.
         GameObject g = new GameObject("Flash");
-        g.transform.parent = parent_rect.parent;
+        g.transform.SetParent(parent_rect.parent);
         g.transform.localPosition = Vector3.zero;
+        g.transform.localScale = Vector3.one;
         transform.SetParent(g.transform);
 
         rect.pivot = parent_rect.pivot;
