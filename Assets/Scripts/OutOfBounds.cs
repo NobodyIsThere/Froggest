@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class OutOfBounds : MonoBehaviour
 {
-
-    public Logger logger;
     public GameObject arrow;
     private Transform arrowpos;
 
     private float tooleft;
     private float toolow;
     public float safezone;
-    public GameObject eventSystem;
 
     void Start()
     {
@@ -42,8 +39,6 @@ public class OutOfBounds : MonoBehaviour
         {
             transform.position = new Vector3(tooleft + 1, toolow + 1);
             GetComponent<Score>().EndGame();
-            //Log Data
-            eventSystem.GetComponent<Logger>().printToFile();
         }
 
     }
