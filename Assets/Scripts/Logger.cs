@@ -31,7 +31,6 @@ public class Logger : MonoBehaviour {
         //monitor velocity
         InvokeRepeating("VelocityCheck", 1.0f, 1.0f);
     }
-
 	void VelocityCheck () {
         // Vector2 velocity = body.velocity;
         //double speed = body.velocity.magnitude;
