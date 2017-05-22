@@ -9,6 +9,7 @@ public class Logger : MonoBehaviour {
     public string subjectNumber;
     private string autofilename;
     public Rigidbody2D body;
+    public Transform playerTransform;
     //private Dictionary<double, double> playerSpeed; // timestamp, velocity
     //private double startTime;
     public List<float> velocities = new List<float>();
@@ -32,6 +33,7 @@ public class Logger : MonoBehaviour {
     }
 
     void Update () {
+        PlayerMovement controller = playerTransform.GetComponent<PlayerMovement>();
         // check if mouse is down, if so register mouseposition
     }
 
@@ -49,19 +51,26 @@ public class Logger : MonoBehaviour {
         // do stuff
     }
 
-	public void printToFile() {
+	public void printToFile(int _finalDistance, int _finalScore, int _maxMultiplier, int _numFlies, int _numEdges) {
 		using (StreamWriter file = new StreamWriter(autofilename)) {
             file.Write("velocities,");
             foreach (var entry in velocities) {
                 file.Write(entry);
-                file.Write(",");
+                // add comma unless it's the last entry in the list
+                if (velocities.IndexOf(entry) != velocities.Count - 1) {
+                    file.Write(",");
+                }
             }
             file.WriteLine();
-            file.WriteLine("finalDistance," + finalDistance);
-            file.WriteLine("finalScore," + finalScore);
-            file.WriteLine("maxMultiplier," + maxMultiplier);
-            file.WriteLine("flyBonus," + flyBonus);
-            file.WriteLine("edgeBonus," + edgeBonus);
+            file.WriteLine("finalDistance," + _finalDistance);
+            file.WriteLine("finalScore," + _finalScore);
+            file.WriteLine("maxMultiplier," + _maxMultiplier);
+            file.WriteLine("flyBonus," + _numFlies);
+            file.WriteLine("edgeBonus," + _numEdges);
         }
-    } 
+    }
+
+    public void setSubjectNumber(string subject) {
+        subjectNumber = subject;
+    }
 }
