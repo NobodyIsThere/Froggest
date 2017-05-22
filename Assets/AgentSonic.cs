@@ -8,7 +8,7 @@ public class AgentSonic : MonoBehaviour {
 	public float ReleaseDistance = 1f;
 	public float ReleaseSpeed = 0.01f;
 	public float AttachVertSpeed = 0.1f; // If vspeed below this, look for new platform.
-	public float AngleResolution = 0.0625f * Mathf.PI;
+	public float AngleResolution = 0.001f * Mathf.PI;
 
 	private bool _isAttached;
 	private Vector2 _attachedPoint;
@@ -53,8 +53,8 @@ public class AgentSonic : MonoBehaviour {
 		{
 			if (rb.velocity.y < AttachVertSpeed)
 			{
-				Vector2 best_position = rb.position;
-				for (float angle = -0.5f * Mathf.PI; angle < 0.5f * Mathf.PI; angle += AngleResolution)
+				Vector2 best_position = rb.position + Vector2.up;
+				for (float angle = -Mathf.PI; angle < Mathf.PI; angle += AngleResolution)
 				{
 					int num_hits = Physics2D.RaycastNonAlloc (rb.position, AngleToVector (angle), _hits, Mathf.Infinity, 1 << _geometryLayer);
 					if (num_hits > 0)

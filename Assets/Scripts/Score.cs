@@ -86,11 +86,10 @@ public class Score : MonoBehaviour
                 {
                     if (Mathf.Abs(_tongueHits[0].normal.y) < 0.001)
                     {
-                        mousePos.z = -1f;
                         if (_multiplier > 0)
                         {
                             int increment = _multiplier * EdgeBonus;
-                            GameObject edge_effect = Instantiate(EdgeEffect, mousePos, Quaternion.identity);
+							GameObject edge_effect = Instantiate(EdgeEffect, _tongueHits[0].point, Quaternion.identity);
                             edge_effect.transform.Find("PickupText").GetComponent<Text>().text = "+" + increment.ToString();
                             _num_edges++;
                             _score += increment;

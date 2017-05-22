@@ -19,6 +19,7 @@ public class PlayerMovement : MonoBehaviour
 
     // Fake input
     private bool _is_fake_clicking = false;
+	private bool _received_input_last_frame = false;
     private bool _has_just_fake_clicked = false;
     private bool _has_just_fake_released = false;
     private Vector2 _fake_click_point;
@@ -195,7 +196,15 @@ public class PlayerMovement : MonoBehaviour
             _updateTongue = false;
         }
 
-        _has_just_fake_clicked = false;
-        _has_just_fake_released = false;
+		if (_received_input_last_frame)
+		{
+			_has_just_fake_clicked = false;
+			_has_just_fake_released = false;
+			_received_input_last_frame = false;
+		}
+		else if (_has_just_fake_clicked || _has_just_fake_released)
+		{
+			_received_input_last_frame = true;
+		}
     }
 }
