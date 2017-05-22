@@ -9,7 +9,7 @@ public class AgentSonic : MonoBehaviour {
 	public float ReleaseSpeed = 0.01f;
 	public float AttachVertSpeed = 0.1f; // If vspeed below this, look for new platform.
 	public float AngleResolution = 0.001f * Mathf.PI;
-	public float SafeZone = 2f;
+	public float SafeZone = 3f;
 
 	private bool _isAttached;
 	private Vector2 _attachedPoint;
@@ -18,6 +18,7 @@ public class AgentSonic : MonoBehaviour {
 	private Rigidbody2D rb;
 	private PlayerMovement movement;
 	private int _geometryLayer;
+	private float _leftLimit;
 	private float _lowerLimit;
 
 	// Memory allocation
@@ -29,7 +30,9 @@ public class AgentSonic : MonoBehaviour {
 		rb = GetComponent<Rigidbody2D> ();
 		movement = GetComponent<PlayerMovement> ();
 		_geometryLayer = LayerMask.NameToLayer ("Geometry");
-		_lowerLimit = Camera.main.ViewportToWorldPoint (new Vector3 (0, 0, Camera.main.nearClipPlane)).y;
+		Vector3 bounds = Camera.main.ViewportToWorldPoint (new Vector3 (0, 0, Camera.main.nearClipPlane));
+		_lowerLimit = bounds.y;
+		_leftLimit = bounds.x;
 	}
 	
 	// Update is called once per frame
@@ -54,7 +57,7 @@ public class AgentSonic : MonoBehaviour {
 		{
 			if (rb.velocity.y < AttachVertSpeed)
 			{
-				Vector2 best_position = rb.position + Vector2.up;
+				Vector2 best_position = new Vector2 (_leftLimit, rb.position.y);
 				for (float angle = -Mathf.PI; angle < Mathf.PI; angle += AngleResolution)
 				{
 					int num_hits = Physics2D.RaycastNonAlloc (rb.position, AngleToVector (angle), _hits, Mathf.Infinity, 1 << _geometryLayer);
