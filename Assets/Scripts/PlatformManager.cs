@@ -46,9 +46,10 @@ public class PlatformManager : MonoBehaviour {
         //check space is clear
         if (clearspace)
         {
-            //Choose a Y value based on the min/max spread
+            //Choose a Y value between the maximum possible value below & above the last platform
             float platvertspace = Random.Range((lastplat.y - MaxVertSpread), (lastplat.y + MaxVertSpread));
 
+            //adjust vert space if minimum vertical spacing not met
             if (platvertspace > (lastplat.y - MinVertSpread) && platvertspace < (lastplat.y + MinVertSpread))
             {
                 if (Random.value < 0.5f)
@@ -56,8 +57,8 @@ public class PlatformManager : MonoBehaviour {
                 else
                     platvertspace = Mathf.Clamp(lastplat.y - MinVertSpread, lastplat.y, lowbound.y);
             }
+            //clamp platform Y to screen bounds
             platvertspace = Mathf.Clamp(platvertspace, lowbound.y, topbound.y);
-            Debug.Log(platvertspace);
 
             platpos = new Vector3(transform.position.x, platvertspace, 0);
             if (platpos.x >= (lastplat.x + MinHorzSpread))
