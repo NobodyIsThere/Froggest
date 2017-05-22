@@ -9,6 +9,7 @@ public class Logger : MonoBehaviour {
     public string subjectNumber;
     private string autofilename;
     public Rigidbody2D body;
+    public Transform playerTransform;
     //private Dictionary<double, double> playerSpeed; // timestamp, velocity
     //private double startTime;
     public List<float> velocities = new List<float>();
@@ -32,6 +33,10 @@ public class Logger : MonoBehaviour {
     }
 
     void Update () {
+<<<<<<< HEAD
+=======
+        PlayerMovement controller = playerTransform.GetComponent<PlayerMovement>();
+>>>>>>> 5e7c872e00f5a1676c3133331c32fca9a9e586dc
         // check if mouse is down, if so register mouseposition
     }
 
@@ -49,11 +54,16 @@ public class Logger : MonoBehaviour {
         // do stuff
     }
 
+<<<<<<< HEAD
 	public void printToFile() {
+=======
+	public void printToFile(int _finalDistance, int _finalScore, int _maxMultiplier, int _numFlies, int _numEdges) {
+>>>>>>> 5e7c872e00f5a1676c3133331c32fca9a9e586dc
 		using (StreamWriter file = new StreamWriter(autofilename)) {
             file.Write("velocities,");
             foreach (var entry in velocities) {
                 file.Write(entry);
+<<<<<<< HEAD
                 file.Write(",");
             }
             file.WriteLine();
@@ -64,4 +74,23 @@ public class Logger : MonoBehaviour {
             file.WriteLine("edgeBonus," + edgeBonus);
         }
     } 
+=======
+                // add comma unless it's the last entry in the list
+                if (velocities.IndexOf(entry) != velocities.Count - 1) {
+                    file.Write(",");
+                }
+            }
+            file.WriteLine();
+            file.WriteLine("finalDistance," + _finalDistance);
+            file.WriteLine("finalScore," + _finalScore);
+            file.WriteLine("maxMultiplier," + _maxMultiplier);
+            file.WriteLine("flyBonus," + _numFlies);
+            file.WriteLine("edgeBonus," + _numEdges);
+        }
+    }
+
+    public void setSubjectNumber(string subject) {
+        subjectNumber = subject;
+    }
+>>>>>>> 5e7c872e00f5a1676c3133331c32fca9a9e586dc
 }
