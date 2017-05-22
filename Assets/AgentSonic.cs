@@ -10,6 +10,7 @@ public class AgentSonic : MonoBehaviour {
 	public float AttachVertSpeed = 0.1f; // If vspeed below this, look for new platform.
 	public float AngleResolution = 0.001f * Mathf.PI;
 	public float SafeZone = 3f;
+	public float OffScreenSafeZone = 0.5f;
 
 	private bool _isAttached;
 	private Vector2 _attachedPoint;
@@ -63,7 +64,7 @@ public class AgentSonic : MonoBehaviour {
 					int num_hits = Physics2D.RaycastNonAlloc (rb.position, AngleToVector (angle), _hits, Mathf.Infinity, 1 << _geometryLayer);
 					if (num_hits > 0)
 					{
-						if (_hits [0].point.x > best_position.x && Vector2.Distance (rb.position, _hits [0].point) < _hits [0].point.y - _lowerLimit)
+						if (_hits [0].point.x > best_position.x && Vector2.Distance (rb.position, _hits [0].point) < _hits [0].point.y - _lowerLimit + OffScreenSafeZone)
 						{
 							best_position = _hits [0].point;
 						}
