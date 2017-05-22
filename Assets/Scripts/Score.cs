@@ -20,6 +20,10 @@ public class Score : MonoBehaviour
     public int PickupScore = 1000;
     public float VelocityMultiplier = 10f; // How many points do you get per second for one unit of velocity?
     public float MultiplierVelocityThreshold = 5f;  // Score multiplier increases at integer multiples of this velocity.
+    public bool FlyClickMode = true;    // Do you pick up flies by clicking on them?
+    public bool FlyCollisionMode = true;    // Do you pick up flies by colliding with them?
+    public bool FlySocialMode = false;  // Do you pick up flies by chatting with them at bars?
+    public float FlyClickRadius = 1f;
 
     private Rigidbody2D rb;
 
@@ -74,11 +78,11 @@ public class Score : MonoBehaviour
             }
             mousePos.z = 0;
             _numHits = Physics2D.RaycastNonAlloc(transform.position, mousePos - transform.position, _tongueHits,
-                float.PositiveInfinity, (1 << _geometryLayer) | (1 << _pickupsLayer));
+                float.PositiveInfinity, 1 << _geometryLayer);
             if (_numHits > 0)
             {
                 // Geometry
-                if (_tongueHits[0].transform.gameObject.layer == _geometryLayer && _tongueHits[0].transform != _last_platform)
+                if (_tongueHits[0].transform != _last_platform)
                 {
                     if (Mathf.Abs(_tongueHits[0].normal.y) < 0.001)
                     {
@@ -96,15 +100,15 @@ public class Score : MonoBehaviour
                         IncrementMultiplier();
                     _last_platform = _tongueHits[0].transform;
                 }
+            }
+            if (FlyClickMode)
+            {
+                _numHits = Physics2D.CircleCastNonAlloc(mousePos, FlyClickRadius, Vector2.right, _tongueHits,
+                    0f, 1 << _pickupsLayer);
                 // Flies
-                else if (_tongueHits[0].transform.gameObject.layer == _pickupsLayer)
+                if (_numHits > 0)
                 {
-                    GameObject pickupScore = Instantiate(PickupEffect, _tongueHits[0].transform.position, Quaternion.identity);
-                    int increment = _multiplier * PickupScore;
-                    pickupScore.GetComponentInChildren<Text>().text = "+" + increment.ToString();
-                    _score += increment;
-                    Destroy(_tongueHits[0].transform.gameObject);
-                    _num_flies++;
+                    Pickup(_tongueHits[0].transform.gameObject);
                 }
             }
         }
@@ -130,6 +134,24 @@ public class Score : MonoBehaviour
 
         // Update score display
         ScoreText.text = _score.ToString();
+    }
+
+    void OnTriggerEnter2D(Collider2D c)
+    {
+        if (c.gameObject.layer == _pickupsLayer)
+        {
+            Pickup(c.gameObject);
+        }
+    }
+
+    private void Pickup(GameObject g)
+    {
+        GameObject pickupScore = Instantiate(PickupEffect, g.transform.position, Quaternion.identity);
+        int increment = _multiplier * PickupScore;
+        pickupScore.GetComponentInChildren<Text>().text = "+" + increment.ToString();
+        _score += increment;
+        Destroy(g);
+        _num_flies++;
     }
 
     private void ResetMultiplier()
