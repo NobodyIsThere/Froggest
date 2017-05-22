@@ -92,7 +92,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 364ca1845322a594e943b11b862afbfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventSystem: {fileID: 0}
+  arrow: {fileID: 0}
+  safezone: 0
 --- !u!114 &114523851064715266
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -133,6 +134,10 @@ MonoBehaviour:
   PickupScore: 1000
   VelocityMultiplier: 10
   MultiplierVelocityThreshold: 5
+  FlyClickMode: 1
+  FlyCollisionMode: 1
+  FlySocialMode: 0
+  FlyClickRadius: 1
   MultiplierTextMaxSize: 150
   MultiplierTextMaxSizeValue: 50
 --- !u!120 &120074945866876508
