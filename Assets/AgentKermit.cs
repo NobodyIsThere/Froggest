@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class AgentKermit : MonoBehaviour {
-
-	public GameObject camera;
-	public GameObject player;
+	
 	private Camera cam;
 	private PlayerMovement controller;
 	private float[] midScreenBounds = new float[2]; //left, right
@@ -15,8 +13,8 @@ public class AgentKermit : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		controller = player.GetComponent<PlayerMovement>();
-		cam = camera.GetComponent<Camera>();
+		controller = GetComponent<PlayerMovement>();
+		cam = Camera.main;
 		int screenWidth = cam.pixelWidth;
 		int screenHeight = cam.pixelHeight;
 		centerScreenLine = cam.pixelWidth / 2;
@@ -33,7 +31,7 @@ public class AgentKermit : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		Vector2 playerPosition = player.GetComponent<Transform>().position;
+		Vector2 playerPosition = GetComponent<Transform>().position;
 		playerPosition = cam.WorldToScreenPoint(playerPosition);
 
 		if (playerPosition.y > 30) {

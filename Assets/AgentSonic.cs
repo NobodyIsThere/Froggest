@@ -9,6 +9,7 @@ public class AgentSonic : MonoBehaviour {
 	public float ReleaseSpeed = 0.01f;
 	public float AttachVertSpeed = 0.1f; // If vspeed below this, look for new platform.
 	public float AngleResolution = 0.001f * Mathf.PI;
+	public float SafeZone = 2f;
 
 	private bool _isAttached;
 	private Vector2 _attachedPoint;
@@ -34,13 +35,13 @@ public class AgentSonic : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-		// If we are swinging,
+		// If we are swinging, and are not too low
 		// 	If direction is above ReleaseAngle, release
 		//	If we are past ReleaseDistance past the anchor, release
 		//  If we are moving too slowly, release
 		// Else
 		//	If vertical speed is below AttachVertSpeed, look for new platform
-		if (_isAttached)
+		if (_isAttached && rb.position.y > _lowerLimit + SafeZone)
 		{
 			if (Mathf.Atan2 (rb.velocity.y, rb.velocity.x) > ReleaseAngle ||
 			    rb.position.x > _attachedPoint.x + ReleaseDistance ||
