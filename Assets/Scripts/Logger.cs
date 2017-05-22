@@ -61,9 +61,20 @@ public class Logger : MonoBehaviour {
             file.WriteLine("maxMultiplier," + _maxMultiplier);
             file.WriteLine("flyBonus," + _numFlies);
             file.WriteLine("edgeBonus," + _numEdges);
-            file.Write("mousepos,");
+
+            // log mouse position x in screen coordinates (0,0 bottom left)
+            file.Write("mouseposx,");
             foreach (var pos in mousePositions) {
-                file.Write(pos.ToString());
+                file.Write(pos.x.ToString());
+                // add comma unless it's the last entry in the list
+                if (mousePositions.IndexOf(pos) != mousePositions.Count - 1) {
+                    file.Write(",");
+                }
+            }
+            // log mouse position y in screen coordinates (0,0 bottom left)
+            file.Write("mouseposy,");
+            foreach (var pos in mousePositions) {
+                file.Write(pos.y.ToString());
                 // add comma unless it's the last entry in the list
                 if (mousePositions.IndexOf(pos) != mousePositions.Count - 1) {
                     file.Write(",");
