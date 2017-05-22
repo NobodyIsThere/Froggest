@@ -118,11 +118,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-<<<<<<< HEAD
-  m_Text: 12555
-=======
-  m_Text: 6156
->>>>>>> 5e7c872e00f5a1676c3133331c32fca9a9e586dc
+	m_Text: 0
 --- !u!114 &114238367043303964
 MonoBehaviour:
   m_ObjectHideFlags: 1

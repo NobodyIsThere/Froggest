@@ -19,7 +19,6 @@ public class ButtonManager : MonoBehaviour {
     {
         if (playername.text != "")
         {
-            Debug.Log(playername.text);
             playbutton.interactable = true;
         }
     }
