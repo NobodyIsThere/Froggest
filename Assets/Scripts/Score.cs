@@ -196,6 +196,10 @@ public class Score : MonoBehaviour
         ScoreScreen ss = Instantiate(scoreScreen, Camera.main.transform).GetComponent<ScoreScreen>();
         ss.gameObject.transform.localPosition = new Vector3(0, 0, 1);
         ss.Begin(new int[] {_finalDistance, _finalScore, _max_multiplier, _num_flies, _num_edges});
+
+        // write scores to file
+        Logger log = gameObject.GetComponent<Logger>();
+        log.printToFile(_finalDistance, _finalScore, _max_multiplier, _num_flies, _num_edges);
     }
 
     public int GetFinalScore()
