@@ -57,7 +57,6 @@ public class PlatformManager : MonoBehaviour {
                     platvertspace = Mathf.Clamp(lastplat.y - MinVertSpread, lastplat.y, lowbound.y);
             }
             platvertspace = Mathf.Clamp(platvertspace, lowbound.y, topbound.y);
-            Debug.Log(platvertspace);
 
             platpos = new Vector3(transform.position.x, platvertspace, 0);
             if (platpos.x >= (lastplat.x + MinHorzSpread))
