@@ -115,6 +115,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 _swingPoints.Clear();
                 _swingPoints.Add(_tongueHits[0].point);
+                gameObject.GetComponent<Logger>().registerMouseCoordinates(_tongueHits[0].point); // log mouse coords
                 _updateTongue = true;
 
                 // Cancel most velocity in direction away from swing point

@@ -10,8 +10,6 @@ public class Logger : MonoBehaviour {
     private string autofilename;
     public Rigidbody2D body;
     public Transform playerTransform;
-    //private Dictionary<double, double> playerSpeed; // timestamp, velocity
-    //private double startTime;
     public List<float> velocities = new List<float>();
     private int finalDistance;
     private int finalScore;
@@ -19,22 +17,19 @@ public class Logger : MonoBehaviour {
     private int flyBonus;
     private int edgeBonus;
     private List<Vector2> mousePositions = new List<Vector2>();
+    private List<float> mousePositionTimes = new List<float>();
+    private float startTime;
 
 
     void Start () {
         //new filename
-        autofilename = subjectNumber + "_" + System.DateTime.Now.ToString("hh:mm:ss") + ".csv"; 
+        autofilename = subjectNumber + "_" + System.DateTime.Now.ToString("hh_mm_ss") + ".csv"; 
         Debug.Log(autofilename);
         //body = player.GetComponent<Rigidbody2D>();
 		//startTime = Time.time;
 		//playerSpeed = new Dictionary<double, double>();
         //monitor velocity
         InvokeRepeating("VelocityCheck", 1.0f, 1.0f);
-    }
-
-    void Update () {
-        PlayerMovement controller = playerTransform.GetComponent<PlayerMovement>();
-        // check if mouse is down, if so register mouseposition
     }
 
 	void VelocityCheck () {
@@ -47,8 +42,8 @@ public class Logger : MonoBehaviour {
         //    Debug.Log(entry);
 	}
 
-    void mousePositionsCheck() {
-        // do stuff
+    public void registerMouseCoordinates(Vector2 position) {
+        mousePositions.Add(position);
     }
 
 	public void printToFile(int _finalDistance, int _finalScore, int _maxMultiplier, int _numFlies, int _numEdges) {
@@ -67,6 +62,14 @@ public class Logger : MonoBehaviour {
             file.WriteLine("maxMultiplier," + _maxMultiplier);
             file.WriteLine("flyBonus," + _numFlies);
             file.WriteLine("edgeBonus," + _numEdges);
+            file.Write("mousepos,");
+            foreach (var pos in mousePositions) {
+                file.Write(pos.ToString());
+                // add comma unless it's the last entry in the list
+                if (mousePositions.IndexOf(pos) != mousePositions.Count - 1) {
+                    file.Write(",");
+                }
+            }
         }
     }
 
