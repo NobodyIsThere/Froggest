@@ -6,21 +6,26 @@ public class OutOfBounds : MonoBehaviour
 {
 
     public Logger logger;
+    public GameObject arrow;
+    private Transform arrowpos;
 
     private float tooleft;
     private float toolow;
+    public float safezone;
     public GameObject eventSystem;
 
     void Start()
     {
+        //Set camera 
         Camera camera = Camera.main;
         Vector3 bound = camera.ViewportToWorldPoint(new Vector3(0, 0, camera.nearClipPlane));
-        tooleft = bound.x - 1;
-        toolow = bound.y - 1;
+        tooleft = bound.x - safezone;
+        toolow = bound.y - safezone;
     }
 
     void Update() {
         CheckPos();
+        SetArrow();
     }
 
     void CheckPos()
@@ -41,5 +46,21 @@ public class OutOfBounds : MonoBehaviour
             eventSystem.GetComponent<Logger>().printToFile();
         }
 
+    }
+
+    void SetArrow()
+    {
+        arrowpos = arrow.transform;
+        arrowpos.position = new Vector3(transform.position.x, arrowpos.position.y, 0);
+        //if off top screen, activate arrow
+        if (OnScreen() && arrow.activeSelf)
+            arrow.SetActive(false);
+        if (!OnScreen() && !arrow.activeSelf)
+            arrow.SetActive(true);
+    }
+
+    private bool OnScreen()
+    {
+        return transform.position.y < Camera.main.ViewportToWorldPoint(new Vector3(0, 1, Camera.main.nearClipPlane)).y;
     }
 }

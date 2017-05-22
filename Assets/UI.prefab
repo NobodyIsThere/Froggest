@@ -118,7 +118,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 0
+  m_Text: 2714
 --- !u!114 &114238367043303964
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -140,7 +140,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: ba974827175bf0b4796248cfa9464a95, type: 3}
-    m_FontSize: 100
+    m_FontSize: 109
     m_FontStyle: 2
     m_BestFit: 0
     m_MinSize: 0
