@@ -20,7 +20,7 @@ public class FlyManager : MonoBehaviour {
     void Start()
     {
         CircleCollider2D coll = obj.GetComponent<CircleCollider2D>();
-        radius = coll.radius;
+        radius = coll.radius + 3;
         SpawnFlys();
     }
 
