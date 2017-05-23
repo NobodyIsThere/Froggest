@@ -429,9 +429,10 @@ MonoBehaviour:
   MinSpawnTime: 0.1
   MaxSpawnTime: 1
   MinVertSpread: 0.1
-  MaxVertSpread: 1
-  MinHorzSpread: 5
+  MaxVertSpread: 4
+  MinHorzSpread: 4
   MaxHorzSpread: 9
+  BufferSpace: 1
 --- !u!212 &314815657
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -617,6 +618,7 @@ MonoBehaviour:
   AttachVertSpeed: 0.1
   AngleResolution: 0.003141593
   SafeZone: 3
+  OffScreenSafeZone: 0.5
 --- !u!1001 &532583494
 Prefab:
   m_ObjectHideFlags: 0
@@ -1162,7 +1164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fc64d82c673f62428c1652442e25834, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: {x: 3, y: 0}
+  speed: {x: 2, y: 0}
   direction: {x: -1, y: 0}
   isLinkedToCamera: 1
   isLooping: 1
@@ -1354,6 +1356,11 @@ Prefab:
       value: 
       objectReference: {fileID: 12800000, guid: ba974827175bf0b4796248cfa9464a95,
         type: 3}
+    - target: {fileID: 114147759571855478, guid: 9ee3f78ac47630441bb0883617a18fe9,
+        type: 2}
+      propertyPath: m_Text
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9ee3f78ac47630441bb0883617a18fe9, type: 2}
   m_IsPrefabParent: 0

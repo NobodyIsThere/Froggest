@@ -44,7 +44,7 @@ public class ScrollingScript : MonoBehaviour
 
     void Update()
     {
-        // Movement
+        // Movement for 'flowing'
         Vector3 movement = new Vector3(
           speed.x * direction.x,
           speed.y * direction.y,
@@ -73,11 +73,8 @@ public class ScrollingScript : MonoBehaviour
                         Vector3 lastPosition = lastChild.transform.position;
                         Vector3 lastSize = (lastChild.bounds.max - lastChild.bounds.min);
 
-                        // Set the position of the recyled one to be AFTER the last child.
+                        // Set position of the recyled one to be AFTER the last child, update list
                         firstChild.transform.position = new Vector3(lastPosition.x + lastSize.x, firstChild.transform.position.y, firstChild.transform.position.z);
-
-                        // Set the recycled child to the last position
-                        // of the backgroundPart list.
                         backgroundPart.Remove(firstChild);
                         backgroundPart.Add(firstChild);
                     }

@@ -7,7 +7,7 @@ public class AgentKermit : MonoBehaviour {
 	private Camera cam;
 	private PlayerMovement controller;
 	private float[] midScreenBounds = new float[2]; //left, right
-	private int centerScreenLine;
+	//private int centerScreenLine;
 	private GameObject[] platforms;
 	private GameObject nextPlatform;
 
@@ -17,7 +17,7 @@ public class AgentKermit : MonoBehaviour {
 		cam = Camera.main;
 		int screenWidth = cam.pixelWidth;
 		int screenHeight = cam.pixelHeight;
-		centerScreenLine = cam.pixelWidth / 2;
+		//centerScreenLine = cam.pixelWidth / 2;
 		midScreenBounds[0] = screenWidth / 3; // left bound
 		midScreenBounds[1] = (screenWidth / 3) * 2; // right bound
 		Debug.Log(midScreenBounds[0]);

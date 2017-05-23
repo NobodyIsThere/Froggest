@@ -15,6 +15,7 @@ public class PlatformManager : MonoBehaviour {
     public float MaxVertSpread;
     public float MinHorzSpread;
     public float MaxHorzSpread;
+    public float BufferSpace; // keep platforms spawning too close to top/bottom screen edges
 
     void Start()
     {
@@ -53,12 +54,13 @@ public class PlatformManager : MonoBehaviour {
             if (platvertspace > (lastplat.y - MinVertSpread) && platvertspace < (lastplat.y + MinVertSpread))
             {
                 if (Random.value < 0.5f)
-                    platvertspace = Mathf.Clamp(lastplat.y + MinVertSpread, lastplat.y, topbound.y);
+                    platvertspace = Mathf.Clamp(lastplat.y + MinVertSpread, lastplat.y, (topbound.y - BufferSpace));
                 else
-                    platvertspace = Mathf.Clamp(lastplat.y - MinVertSpread, lastplat.y, lowbound.y);
+                    platvertspace = Mathf.Clamp(lastplat.y - MinVertSpread, lastplat.y, (lowbound.y + BufferSpace));
+                //Debug.Log(topbound.y);
             }
             //clamp platform Y to screen bounds
-            platvertspace = Mathf.Clamp(platvertspace, lowbound.y, topbound.y);
+            platvertspace = Mathf.Clamp(platvertspace, (lowbound.y + BufferSpace), (topbound.y - BufferSpace));
 
             platpos = new Vector3(transform.position.x, platvertspace, 0);
             if (platpos.x >= (lastplat.x + MinHorzSpread))

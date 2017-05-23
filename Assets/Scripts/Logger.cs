@@ -17,28 +17,18 @@ public class Logger : MonoBehaviour {
     private int flyBonus;
     private int edgeBonus;
     private List<Vector2> mousePositions = new List<Vector2>();
-    private List<float> mousePositionTimes = new List<float>();
     private float startTime;
 
 
     void Start () {
         //new filename
         autofilename = subjectNumber + "_" + System.DateTime.Now.ToString("hh_mm_ss") + ".csv"; 
-        Debug.Log(autofilename);
-        //body = player.GetComponent<Rigidbody2D>();
-		//startTime = Time.time;
-		//playerSpeed = new Dictionary<double, double>();
         //monitor velocity
         InvokeRepeating("VelocityCheck", 1.0f, 1.0f);
     }
 	void VelocityCheck () {
-        // Vector2 velocity = body.velocity;
-        //double speed = body.velocity.magnitude;
-        //double currentTime = Time.time;
-        //playerSpeed.Add(currentTime - startTime, speed);
         velocities.Add(body.velocity.magnitude);
-        //foreach (var entry in velocities)
-        //    Debug.Log(entry);
+        //Debug.Log(entry);
 	}
 
     public void registerMouseCoordinates(Vector2 position) {
@@ -71,6 +61,8 @@ public class Logger : MonoBehaviour {
                     file.Write(",");
                 }
             }
+
+            file.WriteLine();
             // log mouse position y in screen coordinates (0,0 bottom left)
             file.Write("mouseposy,");
             foreach (var pos in mousePositions) {
