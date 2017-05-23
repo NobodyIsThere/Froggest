@@ -55,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
             if (extension > 0)
             {
                 Vector2 direction = displacement / distance;
-                return spring_constant*extension*direction;
+                return spring_constant * extension * direction;
             }
             return Vector2.zero;
         }
@@ -64,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
     private Rope tongue;
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         _lineRenderer = GetComponent<LineRenderer>();
     }
@@ -101,9 +101,10 @@ public class PlayerMovement : MonoBehaviour
     {
         return _has_just_fake_released;
     }
-    
+
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
         if (Input.GetMouseButtonDown(0) || _has_just_fake_clicked)
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -117,17 +118,16 @@ public class PlayerMovement : MonoBehaviour
             {
                 _swingPoints.Clear();
                 _swingPoints.Add(_tongueHits[0].point);
-                //gameObject.GetComponent<Logger>().registerMouseCoordinates(_tongueHits[0].point); // log mouse coords
-                gameObject.GetComponent<Logger>().registerMouseCoordinates(Camera.main.ScreenToViewportPoint(Input.mousePosition)); // log mouse coords
+                gameObject.GetComponent<Logger>().registerMouseCoordinates(_tongueHits[0].point); // log mouse coords
                 _updateTongue = true;
 
                 if (RopeInsteadOfSpring)
                 {
                     // Cancel most velocity in direction away from swing point
-                    Vector2 forceDir = (_tongueHits[0].point - (Vector2) transform.position).normalized;
+                    Vector2 forceDir = (_tongueHits[0].point - (Vector2)transform.position).normalized;
                     Rigidbody2D rb = GetComponent<Rigidbody2D>();
                     float forceMag = Vector2.Dot(rb.velocity, -forceDir);
-                    rb.velocity += forceDir*forceMag;
+                    rb.velocity += forceDir * forceMag;
                 }
             }
         }
@@ -154,7 +154,7 @@ public class PlayerMovement : MonoBehaviour
         {
             _numHits = Physics2D.LinecastNonAlloc(transform.position, _swingPoints[_swingPoints.Count - 2], _tongueHits,
                 1 << LayerMask.NameToLayer("Geometry"));
-            if (_numHits == 0 || Vector2.Distance(_tongueHits[0].point, _swingPoints[_swingPoints.Count-2]) < 0.1)
+            if (_numHits == 0 || Vector2.Distance(_tongueHits[0].point, _swingPoints[_swingPoints.Count - 2]) < 0.1)
             {
                 _swingPoints.Remove(_swingPoints.Last());
                 _updateTongue = true;
@@ -176,7 +176,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (tongue.length > MinTongueLength)
             {
-                tongue.length -= TongueRetractSpeed*Time.deltaTime;
+                tongue.length -= TongueRetractSpeed * Time.deltaTime;
             }
         }
 
@@ -191,19 +191,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (_updateTongue)
         {
-<<<<<<< HEAD
-			_lineRenderer.positionCount = _swingPoints.Count;
+            _lineRenderer.positionCount = _swingPoints.Count;
             _lineRenderer.SetPositions(_swingPoints.ToArray());
-			_lineRenderer.positionCount += 1;
+            _lineRenderer.positionCount += 1;
         }
-		_lineRenderer.SetPosition(_lineRenderer.positionCount-1, transform.position);
-=======
-            _lineRenderer.numPositions = _swingPoints.Count;
-            _lineRenderer.SetPositions(_swingPoints.ToArray());
-            _lineRenderer.numPositions += 1;
-        }
-        _lineRenderer.SetPosition(_lineRenderer.numPositions-1, transform.position);
->>>>>>> dd99f594679ab37eac4b01deda8fdddf3bf45658
+        _lineRenderer.SetPosition(_lineRenderer.positionCount - 1, transform.position);
 
         if (_updateTongue)
         {
