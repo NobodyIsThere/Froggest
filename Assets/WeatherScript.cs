@@ -1,55 +1,104 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
-public class WeatherScript : MonoBehaviour {
+public class WeatherScript : MonoBehaviour
+{
 
-    public float RainDistance = 100f;
+    public float WeatherChangeDistance = 500f;  // Weather changes after multiples of this distance.
 
-    public GameObject RainSystem;
+    public ParticleSystem RainSystem;
+    public ParticleSystem SnowSystem;
     public GameObject PlatformSpawner;
-    public Rigidbody2D player;
+    public Rigidbody2D Player;
     public Color RainySkyColour;
+    public Color SnowySkyColour;
     public float SkyFadeTime = 1f;
 
     private bool _isRaining = false;
+    private bool _isSnowing = false;
 
-    private Camera cam;
-    private Color _normal_colour;
-    private Color _start_colour;
-    private Color _target_colour;
-    private bool _is_sky_changing_colour = false;
-    private float _fade_start_time;
+    private float _lastThreshold = 0f;
+    private Camera _cam;
+    private Color _normalColour;
+    private Color _startColour;
+    private Color _targetColour;
+    private bool _isSkyChangingColour = false;
+    private float _fadeStartTime;
 
     // Use this for initialization
     void Start () {
-        cam = Camera.main;
+        _cam = Camera.main;
+        _normalColour = _cam.backgroundColor;
+        StartClear();
     }
     
     // Update is called once per frame
     void Update () {
-        if (_is_sky_changing_colour)
+        if (_isSkyChangingColour)
         {
-            float t = (Time.time - _fade_start_time)/SkyFadeTime;
-            cam.backgroundColor = Color.Lerp(_start_colour, _target_colour, t);
+            float t = (Time.time - _fadeStartTime)/SkyFadeTime;
+            _cam.backgroundColor = Color.Lerp(_startColour, _targetColour, t);
             if (t > 1f)
-                _is_sky_changing_colour = false;
+                _isSkyChangingColour = false;
         }
 
-        if (!_isRaining && player.position.x > RainDistance)
+        if (Player.position.x > _lastThreshold + WeatherChangeDistance)
         {
-            StartRain();
+            _lastThreshold += WeatherChangeDistance;
+            if (_isRaining)
+            {
+                StartSnow();
+            }
+            else if (_isSnowing)
+            {
+                StartClear();
+            }
+            else if (!_isRaining)
+            {
+                StartRain();
+            }
         }
+    }
+
+    private void ChangeSky(Color colour)
+    {
+        _isSkyChangingColour = true;
+        _startColour = _cam.backgroundColor;
+        _targetColour = colour;
+        _fadeStartTime = Time.time;
     }
 
     private void StartRain()
     {
-        RainSystem.SetActive(true);
+        RainSystem.Play();
+        SnowSystem.Stop();
         PlatformSpawner.GetComponent<PlatformManager>().IsRaining = true;
-        _is_sky_changing_colour = true;
-        _start_colour = cam.backgroundColor;
-        _target_colour = RainySkyColour;
-        _fade_start_time = Time.time;
+        ChangeSky(RainySkyColour);
         _isRaining = true;
+        _isSnowing = false;
+    }
+
+    private void StartSnow()
+    {
+        RainSystem.Stop();
+        SnowSystem.Play();
+        PlatformSpawner.GetComponent<PlatformManager>().IsRaining = false;
+        PlatformSpawner.GetComponent<PlatformManager>().IsSnowing = true;
+        ChangeSky(SnowySkyColour);
+        _isRaining = false;
+        _isSnowing = true;
+    }
+
+    private void StartClear()
+    {
+        RainSystem.Stop();
+        SnowSystem.Stop();
+        PlatformSpawner.GetComponent<PlatformManager>().IsRaining = false;
+        PlatformSpawner.GetComponent<PlatformManager>().IsSnowing = false;
+        ChangeSky(_normalColour);
+        _isRaining = false;
+        _isSnowing = false;
     }
 }

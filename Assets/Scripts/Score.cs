@@ -12,6 +12,7 @@ public class Score : MonoBehaviour
     public GameObject EdgeEffect;
     public GameObject PickupEffect;
     public Text ScoreText;
+    public Text FlyText;
 
     public GameObject scoreScreen;
 
@@ -89,7 +90,7 @@ public class Score : MonoBehaviour
                         if (_multiplier > 0)
                         {
                             int increment = _multiplier * EdgeBonus;
-							GameObject edge_effect = Instantiate(EdgeEffect, _tongueHits[0].point, Quaternion.identity);
+                            GameObject edge_effect = Instantiate(EdgeEffect, _tongueHits[0].point, Quaternion.identity);
                             edge_effect.transform.Find("PickupText").GetComponent<Text>().text = "+" + increment.ToString();
                             _num_edges++;
                             _score += increment;
@@ -151,6 +152,7 @@ public class Score : MonoBehaviour
         _score += increment;
         Destroy(g);
         _num_flies++;
+        FlyText.text = "FLIES: " + _num_flies;
     }
 
     private void ResetMultiplier()

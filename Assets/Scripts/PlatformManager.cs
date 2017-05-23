@@ -6,6 +6,7 @@ public class PlatformManager : MonoBehaviour {
 
     public GameObject[] obj;
     public bool IsRaining = false;
+    public bool IsSnowing = false;
     public GameObject SplashSystem;
 
     private bool clearspace = true;
