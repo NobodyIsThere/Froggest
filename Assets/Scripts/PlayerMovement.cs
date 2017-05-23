@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     public float MinTongueLength = 2f;
     public float TongueRetractSpeed = 5f;
     public float TongueStrength = 1000f;
+    public bool RopeInsteadOfSpring = true;
 
     // Tongue physics
     private readonly List<Vector3> _swingPoints = new List<Vector3>();  // The point at which the tongue is attached.
@@ -19,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
 
     // Fake input
     private bool _is_fake_clicking = false;
-	private bool _received_input_last_frame = false;
+    private bool _received_input_last_frame = false;
     private bool _has_just_fake_clicked = false;
     private bool _has_just_fake_released = false;
     private Vector2 _fake_click_point;
@@ -119,11 +120,14 @@ public class PlayerMovement : MonoBehaviour
                 gameObject.GetComponent<Logger>().registerMouseCoordinates(_tongueHits[0].point); // log mouse coords
                 _updateTongue = true;
 
-                // Cancel most velocity in direction away from swing point
-                Vector2 forceDir = (_tongueHits[0].point - (Vector2) transform.position).normalized;
-                Rigidbody2D rb = GetComponent<Rigidbody2D>();
-                float forceMag = Vector2.Dot(rb.velocity, -forceDir);
-                rb.velocity += forceDir*forceMag;
+                if (RopeInsteadOfSpring)
+                {
+                    // Cancel most velocity in direction away from swing point
+                    Vector2 forceDir = (_tongueHits[0].point - (Vector2) transform.position).normalized;
+                    Rigidbody2D rb = GetComponent<Rigidbody2D>();
+                    float forceMag = Vector2.Dot(rb.velocity, -forceDir);
+                    rb.velocity += forceDir*forceMag;
+                }
             }
         }
         else if ((Input.GetMouseButtonUp(0) || _has_just_fake_released) && _swingPoints.Count > 0)
@@ -186,26 +190,26 @@ public class PlayerMovement : MonoBehaviour
 
         if (_updateTongue)
         {
-			_lineRenderer.numPositions = _swingPoints.Count;
+            _lineRenderer.numPositions = _swingPoints.Count;
             _lineRenderer.SetPositions(_swingPoints.ToArray());
-			_lineRenderer.numPositions += 1;
+            _lineRenderer.numPositions += 1;
         }
-		_lineRenderer.SetPosition(_lineRenderer.numPositions-1, transform.position);
+        _lineRenderer.SetPosition(_lineRenderer.numPositions-1, transform.position);
 
         if (_updateTongue)
         {
             _updateTongue = false;
         }
 
-		if (_received_input_last_frame)
-		{
-			_has_just_fake_clicked = false;
-			_has_just_fake_released = false;
-			_received_input_last_frame = false;
-		}
-		else if (_has_just_fake_clicked || _has_just_fake_released)
-		{
-			_received_input_last_frame = true;
-		}
+        if (_received_input_last_frame)
+        {
+            _has_just_fake_clicked = false;
+            _has_just_fake_released = false;
+            _received_input_last_frame = false;
+        }
+        else if (_has_just_fake_clicked || _has_just_fake_released)
+        {
+            _received_input_last_frame = true;
+        }
     }
 }

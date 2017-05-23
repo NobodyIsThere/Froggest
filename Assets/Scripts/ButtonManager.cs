@@ -25,15 +25,15 @@ public class ButtonManager : MonoBehaviour {
 
     public void HideScreen()
     {
-		// Enable AI
-		if (playername.text == "SONIC")
-		{
-			player.AddComponent<AgentSonic> ();
-		}
-		else if (playername.text == "KERMIT")
-		{
-			player.AddComponent<AgentKermit> ();
-		}
+        // Enable AI
+        if (playername.text == "SONIC")
+        {
+            player.AddComponent<AgentSonic> ();
+        }
+        else if (playername.text == "KERMIT")
+        {
+            player.AddComponent<AgentKermit> ();
+        }
         player.SetActive(true);
         screen.SetActive(false);
     }
