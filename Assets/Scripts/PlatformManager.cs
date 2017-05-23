@@ -5,6 +5,10 @@ using UnityEngine;
 public class PlatformManager : MonoBehaviour {
 
     public GameObject[] obj;
+    public bool IsRaining = false;
+    public bool IsSnowing = false;
+    public GameObject SplashSystem;
+
     private bool clearspace = true;
     Vector3 platpos;
     Vector3 lastplat;
@@ -66,7 +70,16 @@ public class PlatformManager : MonoBehaviour {
             if (platpos.x >= (lastplat.x + MinHorzSpread))
             {
                 platpos.x = SpreadPlatforms(platpos.x);
-                Instantiate(obj[Random.Range(0, obj.GetLength(0))], platpos, Quaternion.identity);
+                GameObject platform = Instantiate(obj[Random.Range(0, obj.Length)], platpos, Quaternion.identity);
+                if (IsRaining)
+                {
+                    int num_blocks = platform.transform.childCount;
+                    GameObject splash = Instantiate(SplashSystem, platform.transform);
+                    splash.transform.localPosition = new Vector3(0f, 0.6f, 0.5f);
+                    ParticleSystem.ShapeModule shape = splash.GetComponent<ParticleSystem>().shape;
+                    shape.radius = platform.GetComponent<BoxCollider2D>().size.x*0.5f;
+                    splash.GetComponent<ParticleSystem>().Play();
+                }
                 lastplat = platpos;
             }
         }
