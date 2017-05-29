@@ -5,19 +5,19 @@ using UnityEngine;
 
 public class WeatherScript : MonoBehaviour
 {
+    public enum Weather { CLEAR, RAIN, SNOW };
 
     public float WeatherChangeDistance = 500f;  // Weather changes after multiples of this distance.
 
     public ParticleSystem RainSystem;
     public ParticleSystem SnowSystem;
-    public GameObject PlatformSpawner;
+    public PlatformManager PM;
     public Rigidbody2D Player;
     public Color RainySkyColour;
     public Color SnowySkyColour;
     public float SkyFadeTime = 1f;
 
-    private bool _isRaining = false;
-    private bool _isSnowing = false;
+    private Weather _weather;
 
     private float _lastThreshold = 0f;
     private Camera _cam;
@@ -47,17 +47,20 @@ public class WeatherScript : MonoBehaviour
         if (Player.position.x > _lastThreshold + WeatherChangeDistance)
         {
             _lastThreshold += WeatherChangeDistance;
-            if (_isRaining)
+            switch (_weather)
             {
-                StartSnow();
-            }
-            else if (_isSnowing)
-            {
-                StartClear();
-            }
-            else if (!_isRaining)
-            {
-                StartRain();
+                case Weather.RAIN:
+                    StartSnow();
+                    break;
+                case Weather.SNOW:
+                    StartClear();
+                    break;
+                case Weather.CLEAR:
+                    StartRain();
+                    break;
+                default:
+                    StartClear();
+                    break;
             }
         }
     }
@@ -74,31 +77,26 @@ public class WeatherScript : MonoBehaviour
     {
         RainSystem.Play();
         SnowSystem.Stop();
-        PlatformSpawner.GetComponent<PlatformManager>().IsRaining = true;
         ChangeSky(RainySkyColour);
-        _isRaining = true;
-        _isSnowing = false;
+        _weather = Weather.RAIN;
+        PM.Weather = _weather;
     }
 
     private void StartSnow()
     {
         RainSystem.Stop();
         SnowSystem.Play();
-        PlatformSpawner.GetComponent<PlatformManager>().IsRaining = false;
-        PlatformSpawner.GetComponent<PlatformManager>().IsSnowing = true;
         ChangeSky(SnowySkyColour);
-        _isRaining = false;
-        _isSnowing = true;
+        _weather = Weather.SNOW;
+        PM.Weather = _weather;
     }
 
     private void StartClear()
     {
         RainSystem.Stop();
         SnowSystem.Stop();
-        PlatformSpawner.GetComponent<PlatformManager>().IsRaining = false;
-        PlatformSpawner.GetComponent<PlatformManager>().IsSnowing = false;
         ChangeSky(_normalColour);
-        _isRaining = false;
-        _isSnowing = false;
+        _weather = Weather.CLEAR;
+        PM.Weather = _weather;
     }
 }

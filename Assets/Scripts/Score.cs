@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class Score : MonoBehaviour
@@ -12,7 +9,7 @@ public class Score : MonoBehaviour
     public GameObject EdgeEffect;
     public GameObject PickupEffect;
     public Text ScoreText;
-    public Text FlyText;
+    public Text DistanceText;
 
     public GameObject scoreScreen;
 
@@ -49,6 +46,7 @@ public class Score : MonoBehaviour
     // Stuff that we work out at Start time.
     private int _geometryLayer = 0;
     private int _pickupsLayer = 0;
+    private int _startX = 0;
     private PlayerMovement _playerMovement;
 
     // Memory allocation
@@ -61,6 +59,7 @@ public class Score : MonoBehaviour
         _score = 0;
         _multiplier = 0;
         rb = GetComponent<Rigidbody2D>();
+        _startX = (int) rb.position.x;
         _multiplier_text_min_size = MultiplierText.fontSize;
         _geometryLayer = LayerMask.NameToLayer("Geometry");
         _pickupsLayer = LayerMask.NameToLayer("Pickups");
@@ -134,6 +133,7 @@ public class Score : MonoBehaviour
 
         // Update score display
         ScoreText.text = _score.ToString();
+        DistanceText.text = ((int)rb.position.x - _startX).ToString() + "m";
     }
 
     void OnTriggerEnter2D(Collider2D c)
@@ -152,7 +152,6 @@ public class Score : MonoBehaviour
         _score += increment;
         Destroy(g);
         _num_flies++;
-        FlyText.text = "FLIES: " + _num_flies;
     }
 
     private void ResetMultiplier()
@@ -189,7 +188,7 @@ public class Score : MonoBehaviour
     {
         rb.isKinematic = true;
 
-        _finalDistance = (int) rb.position.x;
+        _finalDistance = (int) rb.position.x - _startX;
         _finalScore = _score;
 
         rb.position = transform.position;

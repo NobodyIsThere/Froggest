@@ -5,5 +5,9 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/newDemoScene.unity
+    guid: 94af4b21e9eb04fcc809adcdadecb980
+  - enabled: 1
+    path: Assets/Froggest.unity
+    guid: b0e4ed1fec885c540859882dcbb6a00d

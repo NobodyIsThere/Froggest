@@ -5,9 +5,9 @@ using UnityEngine;
 public class PlatformManager : MonoBehaviour {
 
     public GameObject[] obj;
-    public bool IsRaining = false;
-    public bool IsSnowing = false;
+    public WeatherScript.Weather Weather;
     public GameObject SplashSystem;
+    public GameObject Snow;
 
     private bool clearspace = true;
     Vector3 platpos;
@@ -24,8 +24,6 @@ public class PlatformManager : MonoBehaviour {
     void Start()
     {
         Camera camera = Camera.main;
-        Vector3 topbound = camera.ViewportToWorldPoint(new Vector3(1, 1, camera.nearClipPlane));
-        Vector3 lowbound = camera.ViewportToWorldPoint(new Vector3(0, 0, camera.nearClipPlane));
         lastplat = new Vector3((transform.position.x - MinHorzSpread), transform.position.y, transform.position.z);
         SpawnPlatforms();
     }
@@ -71,14 +69,24 @@ public class PlatformManager : MonoBehaviour {
             {
                 platpos.x = SpreadPlatforms(platpos.x);
                 GameObject platform = Instantiate(obj[Random.Range(0, obj.Length)], platpos, Quaternion.identity);
-                if (IsRaining)
+                switch (Weather)
                 {
-                    int num_blocks = platform.transform.childCount;
-                    GameObject splash = Instantiate(SplashSystem, platform.transform);
-                    splash.transform.localPosition = new Vector3(0f, 0.6f, 0.5f);
-                    ParticleSystem.ShapeModule shape = splash.GetComponent<ParticleSystem>().shape;
-                    shape.radius = platform.GetComponent<BoxCollider2D>().size.x*0.5f;
-                    splash.GetComponent<ParticleSystem>().Play();
+                    case WeatherScript.Weather.RAIN:
+                        int num_blocks = platform.transform.childCount;
+                        GameObject splash = Instantiate(SplashSystem, platform.transform);
+                        splash.transform.localPosition = new Vector3(0f, 0.6f, 0.5f);
+                        ParticleSystem.ShapeModule shape = splash.GetComponent<ParticleSystem>().shape;
+                        shape.radius = platform.GetComponent<BoxCollider2D>().size.x*0.5f;
+                        splash.GetComponent<ParticleSystem>().Play();
+                        break;
+                    case WeatherScript.Weather.SNOW:
+                        foreach (Transform t in platform.transform)
+                        {
+                            Instantiate(Snow, t);
+                        }
+                        break;
+                    default:
+                        break;
                 }
                 lastplat = platpos;
             }

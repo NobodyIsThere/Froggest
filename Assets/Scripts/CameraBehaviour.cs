@@ -10,7 +10,7 @@ public class CameraBehaviour : MonoBehaviour {
     public float LeadDistance = 10f;    // How far in front of the frog to stay
     private Vector3 velocity = Vector3.zero;
 
-    void Update () {
+    void LateUpdate () {
 
         if (frog.position.x + LeadDistance > transform.position.x)
         {
