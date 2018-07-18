@@ -10,11 +10,14 @@ public class PlatformManager : MonoBehaviour {
     public GameObject Snow;
 
     private bool clearspace = true;
+    private new Camera camera;
     Vector3 platpos;
     Vector3 lastplat;
 
-    public float MinSpawnTime;
-    public float MaxSpawnTime;
+    public float next_pos;
+
+    public float MinSpawnDist = 5;
+    public float MaxSpawnDist = 10;
     public float MinVertSpread;
     public float MaxVertSpread;
     public float MinHorzSpread;
@@ -23,9 +26,62 @@ public class PlatformManager : MonoBehaviour {
 
     void Start()
     {
-        Camera camera = Camera.main;
-        lastplat = new Vector3((transform.position.x - MinHorzSpread), transform.position.y, transform.position.z);
-        SpawnPlatforms();
+        camera = Camera.main;
+        lastplat = new Vector3((transform.position.x - MinHorzSpread), transform.position.y, 0);
+        //SpawnPlatforms();
+        next_pos = GetNextPos();
+    }
+
+    void Update()
+    {
+        if (transform.parent.position.x > next_pos)
+        {
+            SpawnPlatform();
+            next_pos = GetNextPos();
+        }
+    }
+
+    private float GetNextPos()
+    {
+        // Returns next x-coordinate at which to spawn a platform.
+        return transform.parent.position.x + Random.Range(MinSpawnDist, MaxSpawnDist);
+    }
+
+    private void SpawnPlatform()
+    {
+        // Spawn a single platform, based on Thryn's code below (but no need to check for overlap)
+        Vector3 topbound = camera.ViewportToWorldPoint(new Vector3(1, 1, camera.nearClipPlane));
+        Vector3 lowbound = camera.ViewportToWorldPoint(new Vector3(0, 0, camera.nearClipPlane));
+
+        // Pick y-coordinate
+        if (Random.value < 0.5f)
+            platpos.y = Mathf.Clamp(lastplat.y + Random.Range(MinVertSpread, MaxVertSpread), lastplat.y, topbound.y - BufferSpace);
+        else
+            platpos.y = Mathf.Clamp(lastplat.y - Random.Range(MinVertSpread, MaxVertSpread), lowbound.y + BufferSpace, lastplat.y);
+
+        platpos.x = transform.position.x;
+
+        GameObject platform = Instantiate(obj[Random.Range(0, obj.Length)], platpos, Quaternion.identity);
+        switch (Weather)
+        {
+            case WeatherScript.Weather.RAIN:
+                int num_blocks = platform.transform.childCount;
+                GameObject splash = Instantiate(SplashSystem, platform.transform);
+                splash.transform.localPosition = new Vector3(0f, 0.6f, 0.5f);
+                ParticleSystem.ShapeModule shape = splash.GetComponent<ParticleSystem>().shape;
+                shape.radius = platform.GetComponent<BoxCollider2D>().size.x * 0.5f;
+                splash.GetComponent<ParticleSystem>().Play();
+                break;
+            case WeatherScript.Weather.SNOW:
+                foreach (Transform t in platform.transform)
+                {
+                    Instantiate(Snow, t);
+                }
+                break;
+            default:
+                break;
+        }
+        lastplat = platpos;
     }
 
     //check if trying to spawn within a preexisting platform
@@ -42,7 +98,7 @@ public class PlatformManager : MonoBehaviour {
     //attempt to spawn a platform if space seems clear
     void SpawnPlatforms()
     {
-        Camera camera = Camera.main;
+        camera = Camera.main;
         Vector3 topbound = camera.ViewportToWorldPoint(new Vector3(1, 1, camera.nearClipPlane));
         Vector3 lowbound = camera.ViewportToWorldPoint(new Vector3(0, 0, camera.nearClipPlane));
 
@@ -91,7 +147,7 @@ public class PlatformManager : MonoBehaviour {
                 lastplat = platpos;
             }
         }
-            Invoke("SpawnPlatforms", Random.Range(MinSpawnTime, MaxSpawnTime));
+        // Invoke("SpawnPlatforms", Random.Range(MinSpawnTime, MaxSpawnTime));
 
     }
 

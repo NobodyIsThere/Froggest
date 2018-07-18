@@ -10,12 +10,13 @@ public class CameraBehaviour : MonoBehaviour {
     public float LeadDistance = 10f;    // How far in front of the frog to stay
     private Vector3 velocity = Vector3.zero;
 
-    void LateUpdate () {
+    void Update () {
 
         if (frog.position.x + LeadDistance > transform.position.x)
         {
             target = new Vector3(frog.position.x + LeadDistance, 0, -10);
-            transform.position = Vector3.SmoothDamp(transform.position, target, ref velocity, smoothTime);
+            //transform.position = Vector3.SmoothDamp(transform.position, target, ref velocity, smoothTime);
+            transform.position = target;
         }
 
     }
